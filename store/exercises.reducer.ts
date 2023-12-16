@@ -18,18 +18,15 @@ const initialState: ExerciseStore = {
 
 export const fetchExercises = createAsyncThunk('exercises/fetchExercises', async () => {
     const response = await expressService.get('/exercises');
-    console.log('fetched data: ', response.data.response.length)
     return response.data.response;
 });
 
 export const searchExercises = createAsyncThunk('exercises/searchExercises', async (term: string) => {
     let params = `name=${term}`;
     const response = await expressService.get(`/exercises?${params}`);
-    console.log('searched data: ', response.data.response.length)
     return response.data.response;
 });
 
-// const exercisesAdapter = createEntityAdapter();
 
 const exercisesReducer = createSlice({
     name: 'exercises',

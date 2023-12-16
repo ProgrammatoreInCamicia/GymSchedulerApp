@@ -1,26 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { usePathname, useRouter, useSegments } from 'expo-router';
 
 const MainNavigationBar = () => {
     const colorScheme = useColorScheme();
-    const themeColor = Colors[colorScheme ?? 'light'];
 
     const router = useRouter();
     const path = usePathname();
     const segments = useSegments();
     return (
         <View style={styles.backgroundStyle}>
-            <TouchableOpacity style={[styles.iconContainer, path == '/' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/')}>
+            <TouchableOpacity style={[styles.iconContainer, path == '/' ? styles.iconContainerActive : null]} onPress={() => router.push('/')}>
                 <Feather
                     name="search"
                     style={[styles.iconStyle, { fontSize: path == '/' ? 30 : 25 }]}
                     color={path == '/' ? Colors[colorScheme ?? 'light'].white : Colors[colorScheme ?? 'light'].background}
                 />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconContainer, path == '/schedules' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/schedules')}>
+            <TouchableOpacity style={[styles.iconContainer, path == '/schedules' ? styles.iconContainerActive : null]} onPress={() => router.push('/schedules')}>
                 <AntDesign
                     name="calendar"
                     style={[styles.iconStyle, { fontSize: path == '/schedules' ? 30 : 25 }]}
@@ -35,8 +34,7 @@ const MainNavigationBar = () => {
                 // onPress={() => console.log('icon press')}
                 />
             </TouchableOpacity>
-            <View style={[styles.backgroundStyle, styles.fakeContainer, { backgroundColor: themeColor.white }]}>
-            </View>
+            <View style={[styles.backgroundStyle, styles.fakeContainer]}></View>
         </View>
     );
 };
@@ -47,7 +45,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         marginHorizontal: 10,
-        backgroundColor: Colors.light.background,
+        // backgroundColor: 'red',
         // justifyContent: 'space-around',
         bottom: 5,
         flexDirection: 'row',
@@ -58,9 +56,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     fakeContainer: {
-        // backgroundColor: Colors.light.white,
-        backgroundColor: 'white',
-        // width: 2000,
+        backgroundColor: Colors.light.white,
         // padding: 50,
         height: 75,
         zIndex: -1,
@@ -80,7 +76,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     iconContainerActive: {
-        // backgroundColor: Colors.light.background,
+        backgroundColor: Colors.light.background,
         height: 75,
         width: 75,
         borderRadius: 75,

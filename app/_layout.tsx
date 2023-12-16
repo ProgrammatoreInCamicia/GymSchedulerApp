@@ -1,25 +1,50 @@
-import { Slot, Tabs } from "expo-router";
-import { useColorScheme } from "react-native";
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import Colors from "../constants/Colors";
+import { Slot, Stack, Tabs, usePathname } from "expo-router";
 import { Provider } from "react-redux";
 import store from "../store/store";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import MainNavigationBar from "../components/mainNavigationBar";
+import { Platform } from "react-native";
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme();
+    const path = usePathname();
     return (
-        // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Provider store={store}>
+        <>
             <StatusBar style="light" />
-            <SafeAreaProvider>
-                <Slot />
-                <MainNavigationBar />
-                {/* <Tabs /> */}
-            </SafeAreaProvider>
-        </Provider>
-        // </ThemeProvider>
+            <Provider store={store}>
+                <SafeAreaProvider>
+                    {/* <Slot /> */}
+                    {/* <Tabs tabBar={MainNavigationBar} /> */}
+                    <Stack>
+                        <Stack.Screen
+                            name="index"
+                            options={{
+                                headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="schedules/index"
+                            options={{
+                                headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="schedules/scheduleEdit"
+
+                            options={{
+                                presentation: 'modal',
+                                title: 'Modifica scheda',
+                                headerShown: Platform.OS == 'android' ? false : true
+                            }}
+                        />
+                    </Stack>
+
+                </SafeAreaProvider>
+
+                {path != '/schedules/scheduleEdit' &&
+                    <MainNavigationBar />
+                }
+            </Provider>
+        </>
     )
 }

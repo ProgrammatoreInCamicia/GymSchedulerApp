@@ -7,10 +7,11 @@
     "icon": "./assets/icon.png",
     "scheme": "gym-scheduler-app-scheme",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#252c4a",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#252c4a"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,7 +22,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#252c4a"
       }
     },
     "web": {

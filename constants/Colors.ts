@@ -12,8 +12,7 @@ export default {
         accent: '#3498db',
         white: '#FFFFFF',
         black: '#171717',
-        tabIconDefault: '#ccc',
-        tabIconSelected: tintColorLight,
+        grey: '#9c9c9c40',
     },
     dark: {
         text: '#000',
@@ -24,7 +23,6 @@ export default {
         accent: '#3498db',
         white: '#FFFFFF',
         black: '#171717',
-        tabIconDefault: '#ccc',
-        tabIconSelected: tintColorDark,
+        grey: '#9c9c9c40',
     },
 }

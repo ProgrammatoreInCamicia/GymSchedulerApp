@@ -57,6 +57,14 @@ export interface Exercise {
     secondaryMuscles: MUSCLES_CATETGORIES,
 }
 
+export interface ScheduleStore {
+    schedules: Schedule[],
+    currentSchedule: Schedule
+}
+
 export interface Schedule {
-    id: number;
+    _id: string;
+    title: string;
+    startDate: Date,
+    endDate: Date
 }

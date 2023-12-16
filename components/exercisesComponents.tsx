@@ -6,7 +6,6 @@ import Colors from '../constants/Colors';
 
 const ExercisesComponent = ({ exercises, exercisePressed }: { exercises: Exercise[], exercisePressed: (id: string) => void }) => {
     const colorScheme = useColorScheme();
-    console.log(exercises[0]);
     return (
         <FlatList
             data={exercises}
