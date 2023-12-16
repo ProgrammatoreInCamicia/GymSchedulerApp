@@ -6,15 +6,16 @@ import { formatDate } from '../../shared/utils';
 import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 
 export default function Page() {
   const colorScheme = useColorScheme();
   const schedules = useAppSelector((state) => state.schedules.schedules);
   const themeColor = Colors[colorScheme ?? 'light'];
   return (
-    <SafeAreaView style={[styles.mainContainer, { backgroundColor: themeColor.background }]}>
-      <Text style={[styles.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Gestione schede</Text>
-      <View style={styles.container}>
+    <SafeAreaView style={[CommonComponentsStyle.mainContainer, { backgroundColor: themeColor.background }]}>
+      <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Gestione schede</Text>
+      <View style={CommonComponentsStyle.container}>
         <FlatList
           data={schedules}
           keyExtractor={(schedule) => schedule._id}
@@ -52,19 +53,6 @@ export default function Page() {
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
-  container: {
-    paddingHorizontal: 16,
-    flex: 1
-  },
-  title: {
-    fontSize: 20,
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    padding: 10
-  },
   scheduleContainer: {
     borderWidth: 3,
     borderRadius: 20,
@@ -83,9 +71,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  addScheduleIcon: {
-
   },
   subtitle: {
     fontSize: 20,

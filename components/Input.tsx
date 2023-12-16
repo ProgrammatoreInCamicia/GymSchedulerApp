@@ -14,7 +14,7 @@ const Input = ({
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
     return (
-        <View>
+        <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: themeColor.text }]}>{label}</Text>
             <View style={[styles.inputBackgroundStyle]}>
                 <TextInput
@@ -38,6 +38,10 @@ const Input = ({
 };
 
 const styles = StyleSheet.create({
+    inputContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
     inputBackgroundStyle: {
         marginTop: 5,
         height: 40,

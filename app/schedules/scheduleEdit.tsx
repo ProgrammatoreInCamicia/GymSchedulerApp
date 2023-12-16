@@ -6,6 +6,7 @@ import ScheduleForm from '../../components/ScheduleForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch } from '../../store/hooks';
 import { resetCurrentSchedule, updateSchedulesBasedOnCurrent } from '../../store/schedules.reducer';
+import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 
 export default function scheduleEdit() {
     const colorScheme = useColorScheme();
@@ -24,14 +25,14 @@ export default function scheduleEdit() {
         router.push('/schedules');
     }
     return (
-        <SafeAreaView style={[styles.mainContainer, { backgroundColor: themeColor.background }]}>
+        <SafeAreaView style={[CommonComponentsStyle.mainContainer, { backgroundColor: themeColor.background }]}>
             {/* Use `../` as a simple way to navigate to the root. This is not analogous to "goBack". */}
             {!isPresented && <Link href="../">Dismiss</Link>}
             {/* Native modals have dark backgrounds on iOS, set the status bar to light content. */}
             {Platform.OS === 'android' && (
-                <Text style={[styles.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Modifica scheda</Text>
+                <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Modifica scheda</Text>
             )}
-            <View style={styles.container}>
+            <View style={CommonComponentsStyle.container}>
                 <ScheduleForm onSubmit={onSubmit} onCancel={onCancel} />
             </View>
 
@@ -41,17 +42,4 @@ export default function scheduleEdit() {
 }
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-    },
-    container: {
-        paddingHorizontal: 16,
-        flex: 1
-    },
-    title: {
-        fontSize: 20,
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        padding: 10
-    }
 })

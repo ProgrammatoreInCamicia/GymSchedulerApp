@@ -7,6 +7,7 @@ import { searchExercises, searchTermChange } from '../store/exercises.reducer';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import ExercisesComponent from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
+import CommonComponentsStyle from '../constants/CommonComponentsStyle';
 
 export default function Page() {
   const colorScheme = useColorScheme();
@@ -34,7 +35,7 @@ export default function Page() {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+    <SafeAreaView style={[CommonComponentsStyle.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
 
       <SearchBar term={term} onTermChange={onTermChange} onTermSubmit={onTermSubmit} />
       <ExercisesComponent exercises={exercises} exercisePressed={exercisePressed} />
@@ -44,8 +45,4 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-  },
 });

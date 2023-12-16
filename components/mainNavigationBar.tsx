@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { usePathname, useRouter, useSegments } from 'expo-router';
@@ -10,7 +10,6 @@ const MainNavigationBar = () => {
 
     const router = useRouter();
     const path = usePathname();
-    const segments = useSegments();
     return (
         <View style={styles.backgroundStyle}>
             <TouchableOpacity style={[styles.iconContainer, path == '/' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/')}>
@@ -48,20 +47,15 @@ const styles = StyleSheet.create({
         right: 0,
         marginHorizontal: 10,
         backgroundColor: Colors.light.background,
-        // justifyContent: 'space-around',
         bottom: 5,
         flexDirection: 'row',
         paddingHorizontal: 20,
         borderRadius: 20,
         alignItems: 'center',
-        // display: 'flex',
         justifyContent: 'space-around',
     },
     fakeContainer: {
-        // backgroundColor: Colors.light.white,
         backgroundColor: 'white',
-        // width: 2000,
-        // padding: 50,
         height: 75,
         zIndex: -1,
         bottom: 10,
@@ -75,12 +69,10 @@ const styles = StyleSheet.create({
         width: 50,
         display: 'flex',
         justifyContent: 'center',
-        // backgroundColor: 'green',
         borderRadius: 75,
         overflow: 'hidden',
     },
     iconContainerActive: {
-        // backgroundColor: Colors.light.background,
         height: 75,
         width: 75,
         borderRadius: 75,

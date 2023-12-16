@@ -1,10 +1,11 @@
 import React from "react";
-import { Button, View, StyleSheet, useColorScheme } from "react-native";
+import { View, StyleSheet, useColorScheme } from "react-native";
 import Input from "./Input";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setCurrentScheduleEndDate, setCurrentScheduleStartDate, setCurrentScheduleTitle } from "../store/schedules.reducer";
 import Colors from "../constants/Colors";
 import InternalDatepicker from "./datePicker";
+import InternalButton from "./button";
 
 const ScheduleForm = (
     { onSubmit = () => { }, onCancel }: { onSubmit: () => void, onCancel: () => void }
@@ -33,68 +34,49 @@ const ScheduleForm = (
 
     return (
         <View style={styles.background}>
-            <Input
-                value={currentSchedule.title}
-                placeholder={'Inserisci nome scheda'}
-                onValueChange={onTitleChange}
-                onValueSubmit={onValueSubmit}
-                label="Nome scheda"
-            />
-            {/* <Text style={styles.label}>Inserisci validità: </Text> */}
+            <View style={{ flex: 1 }}>
 
-            <View style={styles.datesContainer}>
-                <InternalDatepicker value={currentSchedule.startDate} label="Dal" onValueChange={onStartDateChange} />
-                <InternalDatepicker value={currentSchedule.endDate} label="Al" onValueChange={onEndDateChange} />
+                <Input
+                    value={currentSchedule.title}
+                    placeholder={'Inserisci nome scheda'}
+                    onValueChange={onTitleChange}
+                    onValueSubmit={onValueSubmit}
+                    label="Nome scheda"
+                />
+
+                <View style={styles.datesContainer}>
+                    <InternalDatepicker value={currentSchedule.startDate} label="Dal" onValueChange={onStartDateChange} />
+                    <InternalDatepicker value={currentSchedule.endDate} label="Al" onValueChange={onEndDateChange} />
+                </View>
             </View>
 
 
-
-
-            <Button title="Avanti" onPress={() => {
-                onSubmit();
-            }} />
-            <Button title="Annulla" onPress={() => {
-                onCancel();
-            }} />
+            <View style={styles.formFooter}>
+                <View style={{ flex: 1 }}>
+                    <InternalButton label='Annulla' cancelButton={true} onPress={() => onCancel()} />
+                </View>
+                <View style={{ flex: 1 }}>
+                    <InternalButton label='Avanti' onPress={() => onSubmit()} />
+                </View>
+            </View>
 
         </View>
     );
 }
 
-ScheduleForm.defaultProps = {
-    initialValues: {
-        title: '',
-        dateStart: null,
-        dateEnd: null,
-        frequency: 2
-    }
-};
-
 const styles = StyleSheet.create({
     background: {
-        padding: 10,
+        flex: 1,
         gap: 5
-    },
-    inputText: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        padding: 5,
-        fontSize: 18,
-        marginBottom: 10
     },
     datesContainer: {
         display: 'flex',
-        // flexDirection: "row",
-        gap: 20
     },
-    dateContainer: {
+    formFooter: {
         display: 'flex',
-        flexDirection: "row",
+        flexDirection: 'row',
+        gap: 20,
     },
-    label: {
-        fontSize: 20,
-    },
-
 });
 
 export default ScheduleForm;
