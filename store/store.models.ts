@@ -1,8 +1,12 @@
-export interface State {
-    counter: number;
-    other: any;
+export interface ExerciseFilter {
+    searchTerm: string;
+}
+
+export interface ExerciseStore {
+    loading: boolean;
     exercises: Exercise[];
-    schedules: Schedule[];
+    error: string;
+    filter: ExerciseFilter
 }
 
 enum MUSCLES_CATETGORIES {
@@ -36,6 +40,7 @@ enum MUSCLES_CATETGORIES {
 
 
 export interface Exercise {
+    _id: string,
     name: string,
     instructions: string,
     force: 'push' | 'pull' | 'both',

@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-const SearchBar = ({ term, onTermChange = Function, onTermSubmit = Function }: { term: string, onTermChange: () => void, onTermSubmit: () => void }) => {
+const SearchBar = ({ term, onTermChange = Function, onTermSubmit = Function }: { term: string, onTermChange: (term: string) => void, onTermSubmit: () => void }) => {
 
     return (
         <View style={styles.backgroundStyle}>
@@ -25,13 +25,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0EEEE',
         height: 40,
         borderRadius: 5,
-        marginHorizontal: 15,
+        // marginHorizontal: 15,
         marginBottom: 10,
         flexDirection: 'row',
     },
     inputStyle: {
-        // borderColor: '#000',
-        // borderWidth: 1,
         flex: 1,
         fontSize: 18
     },

@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React from 'react';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import store, { State } from './store/store';
+import store from './store/store';
 import { decrement, increment } from './store/counter.reducer';
+import { State } from './store/store.models';
 
 export default function App() {
   return (

@@ -1,22 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./counter.reducer";
 import otherReducer from "./other.reducer";
-import { State } from "./store.models";
-import exercisesReducer from "./exercises.reducer";
 import schedulesReducer from "./schedules.reducer";
+import exercisesReducer from "./exercises.reducer";
 
-const initialState: State = {
-    counter: 0,
-    other: {
-        piece1: 0,
-        piece2: {
-            a: 0,
-            b: [],
-        },
-    },
-    exercises: [],
-    schedules: [],
-}
 
 const store = configureStore({
     reducer: {
@@ -25,7 +12,12 @@ const store = configureStore({
         exercises: exercisesReducer,
         schedules: schedulesReducer
     },
-    preloadedState: initialState
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+    })
 });
 
 export default store;
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
