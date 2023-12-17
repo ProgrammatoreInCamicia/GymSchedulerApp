@@ -9,10 +9,10 @@ import { resetCurrentSchedule, updateSchedulesBasedOnCurrent } from '../../store
 import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 
 export default function scheduleEdit() {
+
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
     const isPresented = router.canGoBack();
-
     const dispatch = useAppDispatch();
 
     const onSubmit = () => {

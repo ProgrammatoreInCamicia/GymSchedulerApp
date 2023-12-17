@@ -4,18 +4,39 @@ import Colors from '../../constants/Colors';
 import { useAppSelector } from '../../store/hooks';
 import { formatDate } from '../../shared/utils';
 import { AntDesign } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
+// import Dropdown from '../../components/Dropdown';
+import ModalDropdown from '../../components/modalDropdown';
 
 export default function Page() {
+  const path = usePathname();
   const colorScheme = useColorScheme();
   const schedules = useAppSelector((state) => state.schedules.schedules);
+  const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
   const themeColor = Colors[colorScheme ?? 'light'];
+
+  const data = [
+    { label: 'abs', value: 'abs' },
+    { label: 'cazzo', value: 'cazzo' },
+    { label: 'in', value: 'in' },
+    { label: 'culo', value: 'culo' },
+    { label: 'gucci', value: 'gucci' },
+    { label: 'abs', value: 'abs' },
+    { label: 'cazzo', value: 'cazzo' },
+    { label: 'in', value: 'in' },
+    { label: 'culo', value: 'culo' },
+    { label: 'gucci', value: 'gucci' },
+  ];
+
+  const onSelect = (data: any) => {
+    console.log('on select', data);
+  }
   return (
-    <SafeAreaView style={[CommonComponentsStyle.mainContainer, { backgroundColor: themeColor.background }]}>
-      <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Gestione schede</Text>
-      <View style={CommonComponentsStyle.container}>
+    <SafeAreaView style={[CommonComponentsStyle.container, { backgroundColor: themeColor.background }]}>
+      {/* <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Gestione schede</Text> */}
+      {/* <View style={CommonComponentsStyle.container}>
         <FlatList
           data={schedules}
           keyExtractor={(schedule) => schedule._id}
@@ -43,9 +64,17 @@ export default function Page() {
           onPress={() => router.push('/schedules/scheduleEdit')}
         >
           <AntDesign name="plus" size={40} color="white" />
-          {/* <Text style={[styles.title, { color: Colors[colorScheme ?? 'light'].text }]}>Aggiungi scheda</Text> */}
         </TouchableOpacity>
-      </View>
+      </View> */}
+      <ModalDropdown
+        value={currentSchedule}
+        label='Seleziona scheda'
+        data={schedules}
+        keyField='_id'
+        labelField='title'
+        onSelect={onSelect}
+        onAddElement={() => router.push('/schedules/scheduleEdit')}
+      />
       <StatusBar style="light" />
     </SafeAreaView>
 
