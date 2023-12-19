@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, useColorScheme } from "react-native";
 import Input from "./Input";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -24,12 +24,16 @@ const ScheduleForm = (
         dispatch(setCurrentScheduleEndDate(value));
     }
 
+    const [title, setTitle] = useState(currentSchedule.title);
+
     const onTitleChange = (value: string) => {
-        dispatch(setCurrentScheduleTitle(value))
+        setTitle(value);
+        dispatch(setCurrentScheduleTitle(value));
     }
 
     function onValueSubmit() {
-        console.log('title submit : ')
+        console.log('value submitted: ', title);
+        dispatch(setCurrentScheduleTitle(title));
     }
 
     return (
@@ -37,7 +41,7 @@ const ScheduleForm = (
             <View style={{ flex: 1 }}>
 
                 <Input
-                    value={currentSchedule.title}
+                    value={title}
                     placeholder={'Inserisci nome scheda'}
                     onValueChange={onTitleChange}
                     onValueSubmit={onValueSubmit}

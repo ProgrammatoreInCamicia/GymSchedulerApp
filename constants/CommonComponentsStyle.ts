@@ -17,6 +17,7 @@ export default StyleSheet.create({
     },
     mainContainer: {
         flex: 1,
+        paddingBottom: 100
     },
     container: {
         paddingHorizontal: 16,

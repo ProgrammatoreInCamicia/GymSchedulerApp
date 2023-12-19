@@ -35,7 +35,7 @@ export default function Page() {
   }, []);
 
   return (
-    <SafeAreaView style={[CommonComponentsStyle.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+    <SafeAreaView style={[CommonComponentsStyle.mainContainer, CommonComponentsStyle.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
 
       <SearchBar term={term} onTermChange={onTermChange} onTermSubmit={onTermSubmit} />
       <ExercisesComponent exercises={exercises} exercisePressed={exercisePressed} />

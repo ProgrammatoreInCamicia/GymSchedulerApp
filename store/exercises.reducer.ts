@@ -18,12 +18,14 @@ const initialState: ExerciseStore = {
 
 export const fetchExercises = createAsyncThunk('exercises/fetchExercises', async () => {
     const response = await expressService.get('/exercises');
+    console.log('fetch execises!');
     return response.data.response;
 });
 
 export const searchExercises = createAsyncThunk('exercises/searchExercises', async (term: string) => {
     let params = `name=${term}`;
     const response = await expressService.get(`/exercises?${params}`);
+    console.log('search execises response: ', response.data.response[0]);
     return response.data.response;
 });
 

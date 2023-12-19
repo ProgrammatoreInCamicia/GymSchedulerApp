@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch } from '../../store/hooks';
 import { resetCurrentSchedule, updateSchedulesBasedOnCurrent } from '../../store/schedules.reducer';
 import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
+import { useEffect } from 'react';
 
 export default function scheduleEdit() {
 
@@ -24,8 +25,13 @@ export default function scheduleEdit() {
         dispatch(resetCurrentSchedule());
         router.push('/schedules');
     }
+
+    useEffect(() => {
+        dispatch(resetCurrentSchedule());
+    }, []);
+
     return (
-        <SafeAreaView style={[CommonComponentsStyle.mainContainer, { backgroundColor: themeColor.background }]}>
+        <SafeAreaView style={[{ flex: 1, backgroundColor: themeColor.background }]}>
             {/* Use `../` as a simple way to navigate to the root. This is not analogous to "goBack". */}
             {!isPresented && <Link href="../">Dismiss</Link>}
             {/* Native modals have dark backgrounds on iOS, set the status bar to light content. */}

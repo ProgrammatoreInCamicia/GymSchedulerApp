@@ -66,5 +66,10 @@ export interface Schedule {
     _id: string;
     title: string;
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    routines: Routine[],
+}
+
+export interface Routine {
+    name: string
 }

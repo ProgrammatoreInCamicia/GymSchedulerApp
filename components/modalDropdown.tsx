@@ -5,6 +5,7 @@ import Colors from "../constants/Colors";
 import { AntDesign } from '@expo/vector-icons';
 
 import Animated, { Easing, useAnimatedStyle, withTiming, useSharedValue, FadeInUp, FadeInDown } from 'react-native-reanimated';
+import InternalModal from "./modal";
 
 export default function ModalDropdown({ value, keyField, labelField, label, data, onSelect, onAddElement }: { value: any, keyField: string, labelField: string, label: string, data: any[], onSelect: (item: any) => void, onAddElement: () => void }) {
     const colorScheme = useColorScheme();
@@ -24,6 +25,27 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
         </TouchableOpacity>
     );
 
+    const modalContent = () => {
+        return (
+            <Animated.View style={[styles.modalContentContainer,
+            { backgroundColor: themeColor.background }]} entering={FadeInDown}>
+                <FlatList
+                    data={data}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.flatListStyle}
+                />
+                <TouchableOpacity style={[styles.item, { backgroundColor: themeColor.success }]} onPress={() => {
+                    addElement()
+
+                }}>
+                    <AntDesign name="pluscircle" size={18} color="white" />
+                    <Text style={styles.itemText}>Aggiungi</Text>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    }
+
     const addElement = () => {
         setShowModal(false);
         setTimeout(() => {
@@ -41,8 +63,12 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
                 {(!!value && value[labelField]) || label}
             </Text>
             <Ionicons name="chevron-down" size={25} style={styles.icon} />
-
-            <Modal animationType="none" transparent={true} visible={showModal}>
+            <InternalModal
+                showModal={showModal}
+                removeModal={() => setShowModal(false)}
+                content={modalContent}
+            />
+            {/* <Modal animationType="none" transparent={true} visible={showModal}>
                 <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
                     <View style={[
                         styles.modalContainer,
@@ -66,7 +92,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
                         </Animated.View>
                     </View>
                 </TouchableWithoutFeedback>
-            </Modal>
+            </Modal> */}
         </TouchableOpacity>
     )
 }
@@ -88,10 +114,6 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     icon: {
-    },
-    modalContainer: {
-        height: '100%',
-        width: '100%',
     },
     modalContentContainer: {
         // backgroundColor: 'red',

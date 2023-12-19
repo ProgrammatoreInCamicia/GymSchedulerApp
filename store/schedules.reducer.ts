@@ -5,13 +5,21 @@ const initialCurrentScheduleState: Schedule = {
     _id: null,
     startDate: new Date(),
     endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-    title: ''
+    title: '',
+    routines: []
 }
 
 const initialState: ScheduleStore = {
     currentSchedule: initialCurrentScheduleState,
     schedules: []
 };
+
+function guidGenerator() {
+    var S4 = function () {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+}
 
 const schedulesReducer = createSlice({
     name: 'schedules',
@@ -33,15 +41,20 @@ const schedulesReducer = createSlice({
         updateSchedulesBasedOnCurrent: (state) => {
             if (state.currentSchedule._id) {
                 let scheduleToChange = state.schedules.find(s => s._id == state.currentSchedule._id);
-                scheduleToChange.title = state.currentSchedule.title;
-                scheduleToChange.startDate = state.currentSchedule.startDate;
-                scheduleToChange.endDate = state.currentSchedule.endDate;
+                scheduleToChange = state.currentSchedule;
             } else {
+                state.currentSchedule._id = guidGenerator();
                 state.schedules.push(state.currentSchedule);
             }
         },
         resetCurrentSchedule: (state) => {
             state.currentSchedule = initialCurrentScheduleState
+        },
+        addRoutineToSchedule: (state, action: PayloadAction<{ scheduleId: string, routineName: string }>) => {
+            console.log('inside routine');
+            let scheduleToChange = state.schedules.find(s => s._id == action.payload.scheduleId);
+            scheduleToChange.routines.push({ name: action.payload.routineName });
+            state.currentSchedule = scheduleToChange;
         }
     },
 });
@@ -52,6 +65,7 @@ export const {
     setCurrentScheduleStartDate,
     setCurrentScheduleTitle,
     updateSchedulesBasedOnCurrent,
-    resetCurrentSchedule
+    resetCurrentSchedule,
+    addRoutineToSchedule
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;
