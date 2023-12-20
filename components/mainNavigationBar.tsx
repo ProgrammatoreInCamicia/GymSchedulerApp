@@ -16,21 +16,21 @@ const MainNavigationBar = () => {
                 <Feather
                     name="search"
                     style={[styles.iconStyle, { fontSize: path == '/' ? 30 : 25 }]}
-                    color={path == '/' ? Colors[colorScheme ?? 'light'].white : Colors[colorScheme ?? 'light'].background}
+                    color={path == '/' ? themeColor.white : themeColor.background}
                 />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.iconContainer, path == '/schedules' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/schedules')}>
                 <AntDesign
                     name="calendar"
                     style={[styles.iconStyle, { fontSize: path == '/schedules' ? 30 : 25 }]}
-                    color={path == '/schedules' ? Colors[colorScheme ?? 'light'].white : Colors[colorScheme ?? 'light'].background}
+                    color={path == '/schedules' ? themeColor.white : themeColor.background}
                 />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/schedules')}>
+            <TouchableOpacity style={[styles.iconContainer, path == '/home' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/home')}>
                 <AntDesign
                     name="setting"
-                    style={styles.iconStyle}
-                // color={routeName == '' ? COLORS.accent : COLORS.black} 
+                    style={[styles.iconStyle, { fontSize: path == '/home' ? 30 : 25 }]}
+                    color={path == '/home' ? themeColor.white : themeColor.background}
                 // onPress={() => console.log('icon press')}
                 />
             </TouchableOpacity>

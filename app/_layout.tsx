@@ -17,6 +17,12 @@ export default function RootLayout() {
                     {/* <Tabs tabBar={MainNavigationBar} /> */}
                     <Stack>
                         <Stack.Screen
+                            name="home"
+                            options={{
+                                headerShown: false
+                            }}
+                        />
+                        <Stack.Screen
                             name="index"
                             options={{
                                 headerShown: false,
@@ -37,15 +43,7 @@ export default function RootLayout() {
                                 headerShown: Platform.OS == 'android' ? false : true
                             }}
                         />
-                        <Stack.Screen
-                            name="home"
 
-                            options={{
-                                presentation: 'modal',
-                                title: 'Modifica scheda',
-                                headerShown: Platform.OS == 'android' ? false : true
-                            }}
-                        />
                     </Stack>
 
                 </SafeAreaProvider>

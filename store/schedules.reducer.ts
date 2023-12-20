@@ -51,7 +51,6 @@ const schedulesReducer = createSlice({
             state.currentSchedule = initialCurrentScheduleState
         },
         addRoutineToSchedule: (state, action: PayloadAction<{ scheduleId: string, routineName: string }>) => {
-            console.log('inside routine');
             let scheduleToChange = state.schedules.find(s => s._id == action.payload.scheduleId);
             scheduleToChange.routines.push({ name: action.payload.routineName });
             state.currentSchedule = scheduleToChange;
