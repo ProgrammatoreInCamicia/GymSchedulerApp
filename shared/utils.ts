@@ -1,4 +1,5 @@
 export function formatDate(d: Date, mode: 'date' | 'time' = 'date') {
+    d = new Date(d);
     if (mode == 'date') {
         var month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),

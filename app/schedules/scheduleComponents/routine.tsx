@@ -211,7 +211,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
 
             {routine.exercises.length > 0 && (
                 routine.exercises.map((routineExercise) => (
-                    <View style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
+                    <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
                         <ExerciseItem
                             item={routineExercise.exercise}
                             key={routineExercise.guid}
