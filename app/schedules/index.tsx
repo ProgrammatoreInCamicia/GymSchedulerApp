@@ -13,29 +13,20 @@ import React, { useState } from 'react';
 import Input from '../../components/Input';
 import InternalModal from '../../components/modal';
 import Animated, { FadeIn } from 'react-native-reanimated';
-import PagerView, { PagerViewOnPageScrollEventData } from 'react-native-pager-view';
 import RoutineComponent from './scheduleComponents/routine';
 import AnimatedPagerView from '../../components/animatedPagerView';
 
-const DOT_SIZE = 40;
 
 export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [routineTitle, setRoutineTitle] = useState('');
 
-  // const [scrollOffsetAnimatedValue, setScrollOffsetAnimatedValue] = useState(undefined);
-  // const [positionAnimatedValue, setPositionAnimatedValue] = useState(undefined);
-
-  const scrollOffsetAnimatedValue = React.useRef(new Animated2.Value(0)).current;
-  const positionAnimatedValue = React.useRef(new Animated2.Value(0)).current;
-  console.log('scrollOffsetAnimatedValue', scrollOffsetAnimatedValue, positionAnimatedValue)
   const colorScheme = useColorScheme();
   const schedules = useAppSelector((state) => state.schedules.schedules);
   const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
   const themeColor = Colors[colorScheme ?? 'light'];
   const dispatch = useAppDispatch();
 
-  // console.log('currentSchedule', currentSchedule);
 
   const onSelect = (data: Schedule) => {
     dispatch(setCurrentSchedule(data))
@@ -49,9 +40,6 @@ export default function Page() {
           value={routineTitle}
           placeholder={''}
           onValueChange={setRoutineTitle}
-          // onValueSubmit={() => {
-
-          // }}
           label="Nome routine"
         />
         <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'flex-end' }}>
@@ -85,13 +73,13 @@ export default function Page() {
 
   const newRoutine = () => {
     dispatch(addRoutineToSchedule({ scheduleId: currentSchedule._id, routineName: routineTitle }));
+    setRoutineTitle('');
     setShowModal(false);
   }
 
   const content = (routine: Routine) => {
     return (
       <RoutineComponent routine={routine} />
-      // <Text>{routine.name}</Text>
     )
   }
 
@@ -102,65 +90,9 @@ export default function Page() {
       titleField='name'
       addElement={() => setShowModal(true)}
     />
-    // return currentSchedule.routines.map((routine, index) => {
-    //   return (
-    //     <View key={index}>
-    //       <RoutineComponent routine={routine} />
-    //     </View>
-    //   )
-    // })
   }
 
 
-
-  // const Pagination = ({
-  //   scrollOffsetAnimatedValue,
-  //   positionAnimatedValue,
-  // }: {
-  //   scrollOffsetAnimatedValue: Animated2.Value;
-  //   positionAnimatedValue: Animated2.Value;
-  // }) => {
-  //   console.log('inside pagination; ', scrollOffsetAnimatedValue, positionAnimatedValue)
-  //   const inputRange = [0, currentSchedule.routines.length];
-  //   const translateX = Animated2.add(
-  //     scrollOffsetAnimatedValue,
-  //     positionAnimatedValue
-  //   ).interpolate({
-  //     inputRange,
-  //     outputRange: [0, currentSchedule.routines.length * DOT_SIZE],
-  //   });
-
-  //   return (
-  //     <View style={[styles.pagination]}>
-  //       <Animated2.View
-  //         style={[
-  //           styles.paginationIndicator,
-  //           {
-  //             position: 'absolute',
-  //             transform: [{ translateX: translateX }],
-  //             backgroundColor: 'red'
-  //           },
-  //         ]}
-  //       />
-  //       {currentSchedule.routines.map((item, index) => {
-  //         return (
-  //           <View key={index} style={styles.paginationDotContainer}>
-  //             <View
-  //               style={[styles.paginationDot,]}
-  //             >
-  //               <Text>
-  //                 {item.name}
-
-  //               </Text>
-  //             </View>
-  //           </View>
-  //         );
-  //       })}
-  //     </View>
-  //   );
-  // };
-
-  // const AnimatedPagerView = Animated2.createAnimatedComponent(PagerView);
 
   return (
     <SafeAreaView style={[CommonComponentsStyle.mainContainer, CommonComponentsStyle.container, { backgroundColor: themeColor.background }]}>
@@ -196,36 +128,6 @@ export default function Page() {
         currentSchedule.title != '' && currentSchedule.routines?.length > 0 && (
           <View style={{ flex: 1, paddingTop: 10 }}>
             {renderRoutines()}
-            {/* <AnimatedPagerView style={styles.pagerView} initialPage={0}
-              onPageScroll={Animated2.event<PagerViewOnPageScrollEventData>(
-                [
-                  {
-                    nativeEvent: {
-                      offset: scrollOffsetAnimatedValue,
-                      position: positionAnimatedValue,
-                    },
-                  },
-                ],
-                {
-                  listener: ({ nativeEvent: { offset, position } }) => {
-                    console.log(`Position: ${position} Offset: ${offset}`);
-                  },
-                  useNativeDriver: true,
-                }
-              )}
-            // onPageScroll={(e) => {
-            //   setScrollOffsetAnimatedValue(e.nativeEvent.offset);
-            //   setPositionAnimatedValue(e.nativeEvent.position)
-            //   console.log('page scrolling: ');
-            // }}
-            >
-              {renderRoutines()}
-            </AnimatedPagerView>
-            <Pagination
-              scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-              positionAnimatedValue={positionAnimatedValue}
-            /> */}
-
           </View>
 
         )}
@@ -243,33 +145,9 @@ export default function Page() {
 };
 
 const styles = StyleSheet.create({
-  scheduleContainer: {
-    borderWidth: 3,
-    borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 40,
-    marginVertical: 10,
-    gap: 20
-  },
-  addScheduleContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 3,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   addButton: {
     flexDirection: 'row',
     gap: 10
-  },
-  subtitle: {
-    fontSize: 20,
-    textTransform: 'uppercase',
-    fontWeight: 'bold'
   },
   modalContent: {
     width: '80%',
@@ -277,33 +155,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     borderRadius: 20,
-  },
-  pagerView: {
-    flex: 1
-  },
-
-  pagination: {
-    position: 'absolute',
-    right: 20,
-    bottom: 40,
-    flexDirection: 'row',
-    height: DOT_SIZE,
-  },
-  paginationDot: {
-    width: DOT_SIZE * 0.3,
-    height: DOT_SIZE * 0.3,
-    borderRadius: DOT_SIZE * 0.15,
-  },
-  paginationDotContainer: {
-    width: DOT_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paginationIndicator: {
-    width: DOT_SIZE,
-    height: DOT_SIZE,
-    borderRadius: DOT_SIZE / 2,
-    borderWidth: 2,
-    borderColor: '#ddd',
   },
 })

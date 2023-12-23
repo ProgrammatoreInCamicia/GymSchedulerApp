@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
         padding: 10,
         borderTopLeftRadius: 15,
         borderBottomLeftRadius: 15,
-        shadowOffset: { width: 0, height: 7 },
         shadowOpacity: 0.2, // Adjust the opacity as needed
+        shadowOffset: { width: 0, height: 7 },
         shadowRadius: 5, // Adjust the radius as needed
-        elevation: 5,
+        elevation: 10,
     }
 })
