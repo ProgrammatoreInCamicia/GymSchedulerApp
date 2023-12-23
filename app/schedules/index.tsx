@@ -22,9 +22,9 @@ export default function Page() {
   const [routineTitle, setRoutineTitle] = useState('');
 
   const colorScheme = useColorScheme();
+  const themeColor = Colors[colorScheme ?? 'light'];
   const schedules = useAppSelector((state) => state.schedules.schedules);
   const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
-  const themeColor = Colors[colorScheme ?? 'light'];
   const dispatch = useAppDispatch();
 
 
@@ -72,7 +72,7 @@ export default function Page() {
   }
 
   const newRoutine = () => {
-    dispatch(addRoutineToSchedule({ scheduleId: currentSchedule._id, routineName: routineTitle }));
+    dispatch(addRoutineToSchedule({ scheduleId: currentSchedule.guid, routineName: routineTitle }));
     setRoutineTitle('');
     setShowModal(false);
   }
@@ -91,8 +91,6 @@ export default function Page() {
       addElement={() => setShowModal(true)}
     />
   }
-
-
 
   return (
     <SafeAreaView style={[CommonComponentsStyle.mainContainer, CommonComponentsStyle.container, { backgroundColor: themeColor.background }]}>

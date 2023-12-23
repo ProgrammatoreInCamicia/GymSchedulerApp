@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
 import { searchExercises, searchTermChange } from '../store/exercises.reducer';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import ExercisesComponent from '../components/exercisesComponents';
+import { ExercisesComponent } from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
 import CommonComponentsStyle from '../constants/CommonComponentsStyle';
 

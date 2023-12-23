@@ -63,7 +63,8 @@ export interface ScheduleStore {
 }
 
 export interface Schedule {
-    _id: string;
+    _id: string; // managed by backend
+    guid: string; // frontend purpose
     title: string;
     startDate: Date,
     endDate: Date,
@@ -71,5 +72,17 @@ export interface Schedule {
 }
 
 export interface Routine {
-    name: string
+    name: string,
+    scheduleId: string,
+    _id: string; // managed by backend
+    guid: string; // frontend purpose
+    exercises: RoutineExercise[];
+}
+
+export interface RoutineExercise {
+    guid?: string;
+    sets: number;
+    reps: number;
+    exercise: Exercise;
+    rest: number;
 }

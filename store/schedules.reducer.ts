@@ -1,8 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Schedule, ScheduleStore } from "./store.models";
+import { Routine, RoutineExercise, Schedule, ScheduleStore } from "./store.models";
 
 const initialCurrentScheduleState: Schedule = {
     _id: null,
+    guid: null,
     startDate: new Date(),
     endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     title: '',
@@ -39,11 +40,11 @@ const schedulesReducer = createSlice({
             state.currentSchedule.endDate = action.payload
         },
         updateSchedulesBasedOnCurrent: (state) => {
-            if (state.currentSchedule._id) {
-                let scheduleToChange = state.schedules.find(s => s._id == state.currentSchedule._id);
+            if (state.currentSchedule.guid) {
+                let scheduleToChange = state.schedules.find(s => s.guid == state.currentSchedule.guid);
                 scheduleToChange = state.currentSchedule;
             } else {
-                state.currentSchedule._id = guidGenerator();
+                state.currentSchedule.guid = guidGenerator();
                 state.schedules.push(state.currentSchedule);
             }
         },
@@ -51,8 +52,26 @@ const schedulesReducer = createSlice({
             state.currentSchedule = initialCurrentScheduleState
         },
         addRoutineToSchedule: (state, action: PayloadAction<{ scheduleId: string, routineName: string }>) => {
-            let scheduleToChange = state.schedules.find(s => s._id == action.payload.scheduleId);
-            scheduleToChange.routines.push({ name: action.payload.routineName });
+            let scheduleToChange = state.schedules.find(s => s.guid == action.payload.scheduleId);
+            scheduleToChange.routines.push({
+                name: action.payload.routineName,
+                _id: null,
+                scheduleId: scheduleToChange.guid,
+                guid: guidGenerator(),
+                exercises: []
+            });
+            state.currentSchedule = scheduleToChange;
+        },
+        saveExerciseInRoutine: (state, action: PayloadAction<{ routineExercise: RoutineExercise, routine: Routine }>) => {
+            let scheduleToChange = state.schedules
+                .find(s => s.guid == action.payload.routine.scheduleId)
+            let routineToChange = scheduleToChange
+                .routines.find(r => r.guid == action.payload.routine.guid);
+            routineToChange.exercises.push({
+                ...action.payload.routineExercise,
+                guid: guidGenerator()
+            });
+
             state.currentSchedule = scheduleToChange;
         }
     },
@@ -65,6 +84,7 @@ export const {
     setCurrentScheduleTitle,
     updateSchedulesBasedOnCurrent,
     resetCurrentSchedule,
-    addRoutineToSchedule
+    addRoutineToSchedule,
+    saveExerciseInRoutine,
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

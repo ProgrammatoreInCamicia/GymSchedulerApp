@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Text, InputModeOptions, useColorScheme, Platform, Pressable } from 'react-native';
+import { StyleSheet, View, useColorScheme, Platform, Pressable } from 'react-native';
 import Colors from '../constants/Colors';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Input from './Input';
 import { formatDate } from '../shared/utils';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import CommonComponentsStyle from '../constants/CommonComponentsStyle';
 import InternalButton from './button';
 
 const InternalDatepicker = ({
-    value, label, onValueChange = (value: Date) => { }
+    value, label, onValueChange = (value: Date) => { }, mode = 'date'
 }: {
-    value: Date, label: string, onValueChange?: (value: Date) => void
+    value: Date, label: string, onValueChange?: (value: Date) => void, mode?: 'date' | 'time'
 }) => {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
@@ -46,7 +44,7 @@ const InternalDatepicker = ({
                 <DateTimePicker
                     testID="dateTimePicker"
                     value={value}
-                    mode={'date'}
+                    mode={mode}
                     display="spinner"
                     onChange={onDateChange}
                     minimumDate={new Date()}
@@ -65,7 +63,7 @@ const InternalDatepicker = ({
             {!show && (
                 <Pressable onPress={() => toggleDatepicker()}>
                     <Input
-                        value={formatDate(value)}
+                        value={formatDate(value, mode)}
                         label={label}
                         disabled={true}
                         onInputPressed={toggleDatepicker}
