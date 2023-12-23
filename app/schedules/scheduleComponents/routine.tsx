@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import { Routine } from "../../../store/store.models";
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle";
 import Colors from "../../../constants/Colors";
@@ -202,43 +202,46 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
 
     return (
         <View style={[{ flex: 1 }]}>
-            {routine.exercises.length == 0 && (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Image style={{ width: 200, height: 200 }} source={require('../../../assets/4.png')} />
-                    <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Add some exercises</Text>
-                </View>
-            )}
+            <ScrollView style={[{ flex: 1 }]}>
+                {routine.exercises.length == 0 && (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Image style={{ width: 200, height: 200 }} source={require('../../../assets/4.png')} />
+                        <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Add some exercises</Text>
+                    </View>
+                )}
 
-            {routine.exercises.length > 0 && (
-                routine.exercises.map((routineExercise) => (
-                    <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
-                        <ExerciseItem
-                            item={routineExercise.exercise}
-                            key={routineExercise.guid}
-                            exercisePressed={() => console.log('pressed')}
-                            customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
-                        />
-                        <View style={[{ flexDirection: 'row' }]}>
-                            <View style={[styles.setsContainerPreview]}>
-                                <Text style={[{ color: themeColor.text }]}>Sets: </Text>
-                                <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.sets}</Text>
-                            </View>
-                            <View style={[styles.setsContainerPreview]}>
-                                <Text style={[{ color: themeColor.text }]}>Reps: </Text>
-                                <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.reps}</Text>
+                {routine.exercises.length > 0 && (
+                    routine.exercises.map((routineExercise) => (
+                        <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
+                            <ExerciseItem
+                                item={routineExercise.exercise}
+                                key={routineExercise.guid}
+                                exercisePressed={() => console.log('pressed')}
+                                customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
+                            />
+                            <View style={[{ flexDirection: 'row' }]}>
+                                <View style={[styles.setsContainerPreview]}>
+                                    <Text style={[{ color: themeColor.text }]}>Sets: </Text>
+                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.sets}</Text>
+                                </View>
+                                <View style={[styles.setsContainerPreview]}>
+                                    <Text style={[{ color: themeColor.text }]}>Reps: </Text>
+                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.reps}</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                ))
-            )}
+                    ))
+                )}
+                <View style={{ height: 60 }}></View>
 
-            <InternalModal
-                showModal={showModal}
-                removeModal={() => setShowModal(false)}
-                content={exercisesModalContent}
-                preventRemove={true}
-            />
+                <InternalModal
+                    showModal={showModal}
+                    removeModal={() => setShowModal(false)}
+                    content={exercisesModalContent}
+                    preventRemove={true}
+                />
 
+            </ScrollView>
             <View style={[
                 CommonComponentsStyle.button,
                 styles.addButton,
@@ -328,6 +331,7 @@ const styles = StyleSheet.create({
     },
     previewContainer: {
         borderRadius: 20,
+        marginBottom: 10,
     },
     setsContainerPreview: {
         flex: 1,
