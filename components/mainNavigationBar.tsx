@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, useColorScheme } from 'react-native';
-import { Feather, AntDesign } from '@expo/vector-icons';
+import { Feather, AntDesign, Foundation } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { usePathname, useRouter, useSegments } from 'expo-router';
 
@@ -26,12 +26,18 @@ const MainNavigationBar = () => {
                     color={path == '/schedules' ? themeColor.white : themeColor.background}
                 />
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.iconContainer, path == '/statistics' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/statistics')}>
+                <Foundation
+                    name="graph-bar"
+                    style={[styles.iconStyle, { fontSize: path == '/statistics' ? 30 : 25 }]}
+                    color={path == '/statistics' ? themeColor.white : themeColor.background}
+                />
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.iconContainer, path == '/home' ? { ...styles.iconContainerActive, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/home')}>
                 <AntDesign
                     name="setting"
                     style={[styles.iconStyle, { fontSize: path == '/home' ? 30 : 25 }]}
                     color={path == '/home' ? themeColor.white : themeColor.background}
-                // onPress={() => console.log('icon press')}
                 />
             </TouchableOpacity>
             <View style={[styles.backgroundStyle, styles.fakeContainer, { backgroundColor: themeColor.white }]}>

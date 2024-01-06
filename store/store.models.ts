@@ -69,6 +69,7 @@ export interface Schedule {
     startDate: Date,
     endDate: Date,
     routines: Routine[],
+    statistics: Statistic[],
 }
 
 export interface Routine {
@@ -85,4 +86,11 @@ export interface RoutineExercise {
     reps: number;
     exercise: Exercise;
     rest: number;
+    weight: number;
+}
+
+export interface Statistic {
+    date: Date;
+    totalTime: number;
+    routine: Routine;
 }

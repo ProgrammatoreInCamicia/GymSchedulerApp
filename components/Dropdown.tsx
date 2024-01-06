@@ -23,7 +23,6 @@ const Dropdown = ({ label, data, onSelect }: { label: string, data: any[], onSel
 
   const openDropdown = () => {
     DropdownButton.current.measure((_fx, _fy, _w, h, _px, py) => {
-      console.log(_fx, _fy, _w, h, _px, py);
       setDropdownTop(py + h);
       setDropdownWidth(_w);
       setDropdownLeft(_px);

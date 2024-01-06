@@ -14,9 +14,6 @@ export default function Page() {
 
   const exercises = useAppSelector((state) => state.exercises.exercises);
 
-  const storeData = useAppSelector(state => state);
-  console.log('storedata:', storeData);
-
   const counter = useAppSelector((state) => state.counter);
   const term = useAppSelector((state) => state.exercises.filter.searchTerm);
   const dispatch = useAppDispatch();

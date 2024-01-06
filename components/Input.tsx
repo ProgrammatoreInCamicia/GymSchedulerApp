@@ -16,7 +16,7 @@ const Input = ({
     return (
         <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: themeColor.text }]}>{label}</Text>
-            <View style={[styles.inputBackgroundStyle]}>
+            <View style={[styles.inputBackgroundStyle, { height: height }]}>
                 <TextInput
                     value={value}
                     editable={!disabled}

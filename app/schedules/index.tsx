@@ -25,6 +25,9 @@ export default function Page() {
   const themeColor = Colors[colorScheme ?? 'light'];
   const schedules = useAppSelector((state) => state.schedules.schedules);
   const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
+  console.log(currentSchedule);
+  const schedule = useAppSelector((state) => state.schedules.schedules[1]);
+  console.log(schedule.routines[0].exercises.map(ex => ex.rest));
   const dispatch = useAppDispatch();
 
 

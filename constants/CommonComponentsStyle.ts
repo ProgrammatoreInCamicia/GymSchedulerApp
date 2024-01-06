@@ -25,8 +25,8 @@ export default StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        // textTransform: 'uppercase',
         fontWeight: '500',
-        padding: 15
+        padding: 15,
+        textTransform: 'capitalize'
     }
 });

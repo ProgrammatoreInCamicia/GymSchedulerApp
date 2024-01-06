@@ -13,6 +13,7 @@ import { searchExercises, searchTermChange } from "../../../store/exercises.redu
 import Input from "../../../components/Input";
 import InternalButton from "../../../components/button";
 import { saveExerciseInRoutine } from "../../../store/schedules.reducer";
+import { router } from "expo-router";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
     const colorScheme = useColorScheme();
@@ -43,6 +44,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
     const [note, setNote] = useState('');
     const [sets, setSets] = useState('');
     const [reps, setreps] = useState('');
+    const [currentExerciseGuid, setCurrentExerciseGuid] = useState('');
     const [weight, setweight] = useState('');
     const [time, settime] = useState('');
 
@@ -90,9 +92,12 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                         <Ionicons name="chevron-back" size={24} color={themeColor.text} />
                     </TouchableOpacity>
                     <View style={{ flex: 1 }}>
-                        <Text>Exercise settings</Text>
+                        <Text style={[{ color: themeColor.text }]}>Exercise settings</Text>
                     </View>
-                    <InternalButton label="Fatto" onPress={() => saveExercise()} />
+                    <TouchableOpacity onPress={() => saveExercise()}>
+                        <Text style={[{ color: themeColor.text }]}>Fatto</Text>
+                    </TouchableOpacity>
+                    {/* <InternalButton label="Fatto" onPress={() => saveExercise()} /> */}
                 </View>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -148,21 +153,15 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                             <View>
                                 <Input
                                     inputMode="decimal"
-                                    label="Rest"
+                                    label="Rest (in seconds)"
                                     value={time}
                                     onValueChange={(rest) => {
                                         settime(rest);;
                                     }}
                                 />
-                                {/* <InternalDatepicker
-                                    value={time}
-                                    label="Time: "
-                                    onValueChange={(value) => console.log('change time', value)}
-                                    mode="time"
-                                /> */}
                             </View>
                         </View>
-                        <Text style={[{ marginTop: 15 }]}>Note</Text>
+                        <Text style={[{ marginTop: 15, color: themeColor.text }]}>Note</Text>
                         <Input
                             multiline={true}
                             height={200}
@@ -184,7 +183,9 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 exercise: currentExercise,
                 reps: +reps,
                 rest: +time,
-                sets: +sets
+                sets: +sets,
+                weight: +weight,
+                guid: currentExerciseGuid
             }
         }));
         setShowModal(false);
@@ -202,6 +203,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
 
     return (
         <View style={[{ flex: 1 }]}>
+            {/* Start Routine Exercises */}
             <ScrollView style={[{ flex: 1 }]}>
                 {routine.exercises.length == 0 && (
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -216,7 +218,17 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                             <ExerciseItem
                                 item={routineExercise.exercise}
                                 key={routineExercise.guid}
-                                exercisePressed={() => console.log('pressed')}
+                                exercisePressed={() => {
+                                    setShowModal(true);
+                                    setTimeout(() => {
+                                        exercisePressed(routineExercise.exercise._id);
+                                        setSets(routineExercise.sets.toString());
+                                        setreps(routineExercise.reps.toString());
+                                        settime(routineExercise.rest.toString());
+                                        setCurrentExerciseGuid(routineExercise.guid);
+
+                                    });
+                                }}
                                 customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
                             />
                             <View style={[{ flexDirection: 'row' }]}>
@@ -242,6 +254,9 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 />
 
             </ScrollView>
+            {/* End Routine Exercises */}
+
+            {/* Start Routine control menu */}
             <View style={[
                 CommonComponentsStyle.button,
                 styles.addButton,
@@ -254,7 +269,9 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     <AntDesign name="pluscircle" size={18} color={themeColor.text} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => console.log('play')}
+                    onPress={() => {
+                        router.push({ pathname: '/schedules/scheduleComponents/routinePlayer', params: { routineId: routine.guid } })
+                    }}
                     disabled={routine.exercises.length == 0}
                     style={[styles.iconButton, { opacity: routine.exercises.length > 0 ? 1 : .4 }]}>
                     <Entypo name="controller-play" size={24} color={themeColor.text} />
@@ -263,6 +280,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     <Entypo name="dots-three-horizontal" size={24} color={themeColor.text} />
                 </TouchableOpacity>
             </View>
+            {/* End Routine control menu */}
         </View>
     )
 };

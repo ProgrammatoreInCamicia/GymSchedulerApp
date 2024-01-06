@@ -39,11 +39,24 @@ export default function RootLayout() {
                             />
                             <Stack.Screen
                                 name="schedules/scheduleEdit"
-
                                 options={{
                                     presentation: 'modal',
                                     title: 'Modifica scheda',
                                     headerShown: Platform.OS == 'android' ? false : true
+                                }}
+                            />
+                            <Stack.Screen
+                                name="schedules/scheduleComponents/routinePlayer"
+                                options={{
+                                    presentation: 'containedModal',
+                                    headerShown: false,
+                                }}
+                            />
+
+                            <Stack.Screen
+                                name="statistics/index"
+                                options={{
+                                    headerShown: false,
                                 }}
                             />
 
@@ -53,7 +66,7 @@ export default function RootLayout() {
 
                 </PersistGate>
 
-                {path != '/schedules/scheduleEdit' &&
+                {path != '/schedules/scheduleEdit' && path != '/schedules/scheduleComponents/routinePlayer' &&
                     <MainNavigationBar />
                 }
             </Provider>

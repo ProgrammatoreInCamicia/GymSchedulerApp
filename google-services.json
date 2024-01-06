@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416786198557",
+    "project_id": "pocketgym-d74d8",
+    "storage_bucket": "pocketgym-d74d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416786198557:android:f020ed821a8063d690d6f4",
+        "android_client_info": {
+          "package_name": "com.programmatoreincamicia.pocketgym"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq_wrIa0hw2HFvUaglN7mgZhxdxg9IlQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

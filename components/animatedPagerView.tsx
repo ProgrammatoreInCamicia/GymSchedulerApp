@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native"
 import PagerView from "react-native-pager-view";
 import Colors from "../constants/Colors";
@@ -6,8 +6,14 @@ import Colors from "../constants/Colors";
 
 
 export default function AnimatedPagerView(
-    { data, content, titleField, addElement = Function }:
-        { data: any[], content: (item: any) => React.JSX.Element, titleField: string, addElement?: () => void }
+    { data, content, titleField, addElement = Function, paginationContent, onPageSelected = (page) => { }, page }:
+        {
+            data: any[], content: (item: any) => React.JSX.Element, titleField?: string,
+            addElement?: () => void,
+            paginationContent?: (scrollOffsetAnimatedValue: Animated.Value, positionAnimatedValue: Animated.Value) => React.JSX.Element,
+            onPageSelected?: (page: number) => void,
+            page?: number,
+        }
 ) {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
@@ -19,7 +25,12 @@ export default function AnimatedPagerView(
     const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
     const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
 
-    const Pagination = () => {
+    const internalOnPageSelected = (e: any) => {
+        const currentPage = e.nativeEvent.position;
+        // onPageSelected(currentPage);
+    }
+
+    const Pagination = (scrollOffsetAnimatedValue: Animated.Value, positionAnimatedValue: Animated.Value) => {
         return (
             <View style={styles.paginationContainer}>
                 {data.map((item, index) => {
@@ -50,15 +61,21 @@ export default function AnimatedPagerView(
 
     return (
         <View style={{ flex: 1 }}>
-            {Pagination()}
+            {titleField && (
+                Pagination(scrollOffsetAnimatedValue, positionAnimatedValue)
+            )}
+            {paginationContent && (
+                paginationContent(scrollOffsetAnimatedValue, positionAnimatedValue)
+            )}
             <AnimatedPagerView
                 style={styles.pagerView}
-                initialPage={0}
+                initialPage={page}
                 onPageScroll={(e) => {
                     // Imposto le due variabili di animazione in base ai parametri del PagerView
                     scrollOffsetAnimatedValue.setValue(e.nativeEvent.offset);
                     positionAnimatedValue.setValue(e.nativeEvent.position);
                 }}
+                onPageSelected={internalOnPageSelected}
             >
                 {data.map((item, index) => (
                     <View key={index}>

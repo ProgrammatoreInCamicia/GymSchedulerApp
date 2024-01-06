@@ -32,7 +32,6 @@ const ScheduleForm = (
     }
 
     function onValueSubmit() {
-        console.log('value submitted: ', title);
         dispatch(setCurrentScheduleTitle(title));
     }
 
