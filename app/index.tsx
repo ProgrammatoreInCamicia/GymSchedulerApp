@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ExercisesComponent } from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
 import CommonComponentsStyle from '../constants/CommonComponentsStyle';
+// import { deleteSchedule } from '../store/schedules.reducer';
 
 export default function Page() {
   const colorScheme = useColorScheme();
@@ -32,6 +33,7 @@ export default function Page() {
 
   useEffect(() => {
     // dispatch(fetchExercises());
+    // dispatch(deleteSchedule());
   }, []);
 
   return (

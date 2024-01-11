@@ -4,7 +4,7 @@ import { Platform, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import ScheduleForm from '../../components/ScheduleForm';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { resetCurrentSchedule, updateSchedulesBasedOnCurrent } from '../../store/schedules.reducer';
 import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 import { useEffect } from 'react';
@@ -15,6 +15,8 @@ export default function scheduleEdit() {
     const themeColor = Colors[colorScheme ?? 'light'];
     const isPresented = router.canGoBack();
     const dispatch = useAppDispatch();
+
+    const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
 
     const onSubmit = () => {
         dispatch(updateSchedulesBasedOnCurrent());
@@ -39,7 +41,7 @@ export default function scheduleEdit() {
                 <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Modifica scheda</Text>
             )}
             <View style={CommonComponentsStyle.container}>
-                <ScheduleForm onSubmit={onSubmit} onCancel={onCancel} />
+                <ScheduleForm schedule={currentSchedule} onSubmit={onSubmit} onCancel={onCancel} />
             </View>
 
             <StatusBar style="light" />

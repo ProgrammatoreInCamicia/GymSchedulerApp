@@ -15,10 +15,10 @@ export default {
         grey: '#9c9c9c40',
     },
     dark: {
-        text: '#000000',
+        text: '#ffffff',
         background: '#252c4a',
         secondary: '#1E90FF',
-        success: '#00C851',
+        success: '#4CA54C',
         error: '#ff4444',
         accent: '#3498db',
         white: '#FFFFFF',

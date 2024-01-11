@@ -3,17 +3,17 @@ import { Routine, RoutineExercise, Schedule, ScheduleStore } from "./store.model
 
 const initialCurrentScheduleState: Schedule = {
     _id: null,
-    guid: null,
+    guid: guidGenerator(),
     startDate: new Date(),
     endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-    title: '',
+    title: 'First Schedule',
     routines: [],
     statistics: []
 }
 
 const initialState: ScheduleStore = {
-    currentSchedule: initialCurrentScheduleState,
-    schedules: []
+    currentSchedule: { ...initialCurrentScheduleState },
+    schedules: [{ ...initialCurrentScheduleState }]
 };
 
 function guidGenerator() {
@@ -50,18 +50,29 @@ const schedulesReducer = createSlice({
             }
         },
         resetCurrentSchedule: (state) => {
-            state.currentSchedule = initialCurrentScheduleState
+
+            state.currentSchedule = {
+                _id: null,
+                guid: guidGenerator(),
+                startDate: new Date(),
+                endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+                title: '',
+                routines: [],
+                statistics: [],
+            }
+
+            console.log('reset schedule', state.currentSchedule);
         },
         addRoutineToSchedule: (state, action: PayloadAction<{ scheduleId: string, routineName: string }>) => {
-            let scheduleToChange = state.schedules.find(s => s.guid == action.payload.scheduleId);
-            scheduleToChange.routines.push({
+            let scheduleToChangeIndex = state.schedules.findIndex(s => s.guid == action.payload.scheduleId);
+            state.schedules[scheduleToChangeIndex].routines.push({
                 name: action.payload.routineName,
                 _id: null,
-                scheduleId: scheduleToChange.guid,
+                scheduleId: state.schedules[scheduleToChangeIndex].guid,
                 guid: guidGenerator(),
                 exercises: []
             });
-            state.currentSchedule = scheduleToChange;
+            state.currentSchedule = state.schedules[scheduleToChangeIndex];
         },
         saveExerciseInRoutine: (state, action: PayloadAction<{ routineExercise: RoutineExercise, routine: Routine }>) => {
             let scheduleToChangeIndex = state.schedules
@@ -103,8 +114,11 @@ const schedulesReducer = createSlice({
                 routine: action.payload.routine,
                 totalTime: action.payload.totalTime
             });
-
-        }
+        },
+        // deleteSchedule: (state) => {
+        //     state.schedules.splice(0, 1);
+        //     state.currentSchedule = state.schedules[0];
+        // }
     },
 });
 
@@ -118,5 +132,6 @@ export const {
     addRoutineToSchedule,
     saveExerciseInRoutine,
     addWorkoutStatistics,
+    // deleteSchedule
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

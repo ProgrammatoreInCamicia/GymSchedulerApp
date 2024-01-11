@@ -11,7 +11,7 @@ export default function InternalModal({ showModal, removeModal, content, prevent
     }
 
     return (
-        <Modal animationType="none" transparent={true} visible={showModal}>
+        <Modal animationType="none" transparent={true} visible={showModal} hardwareAccelerated={true}>
             <TouchableWithoutFeedback onPress={() => preventRemove ? removeIsPrevented() : removeModal()}>
                 <View style={[
                     styles.modalContainer,

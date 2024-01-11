@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, useColorScheme } from "react-native";
 import Input from "./Input";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -6,14 +6,15 @@ import { setCurrentScheduleEndDate, setCurrentScheduleStartDate, setCurrentSched
 import Colors from "../constants/Colors";
 import InternalDatepicker from "./datePicker";
 import InternalButton from "./button";
+import { Schedule } from "../store/store.models";
 
 const ScheduleForm = (
-    { onSubmit = () => { }, onCancel }: { onSubmit: () => void, onCancel: () => void }
+    { onSubmit = () => { }, onCancel, schedule }: { onSubmit: () => void, onCancel: () => void, schedule: Schedule }
 ) => {
+    console.log('inside form schedule', schedule);
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
 
-    const currentSchedule = useAppSelector((state) => state.schedules.currentSchedule);
     const dispatch = useAppDispatch();
 
     const onStartDateChange = (value: Date) => {
@@ -24,7 +25,7 @@ const ScheduleForm = (
         dispatch(setCurrentScheduleEndDate(value));
     }
 
-    const [title, setTitle] = useState(currentSchedule.title);
+    const [title, setTitle] = useState(schedule.title);
 
     const onTitleChange = (value: string) => {
         setTitle(value);
@@ -34,6 +35,10 @@ const ScheduleForm = (
     function onValueSubmit() {
         dispatch(setCurrentScheduleTitle(title));
     }
+
+    useEffect(() => {
+        setTitle(schedule.title)
+    }, [schedule])
 
     return (
         <View style={styles.background}>
@@ -48,8 +53,8 @@ const ScheduleForm = (
                 />
 
                 <View style={styles.datesContainer}>
-                    <InternalDatepicker value={currentSchedule.startDate} label="Dal" onValueChange={onStartDateChange} />
-                    <InternalDatepicker value={currentSchedule.endDate} label="Al" onValueChange={onEndDateChange} />
+                    <InternalDatepicker value={schedule.startDate} label="Dal" onValueChange={onStartDateChange} />
+                    <InternalDatepicker value={schedule.endDate} label="Al" onValueChange={onEndDateChange} />
                 </View>
             </View>
 

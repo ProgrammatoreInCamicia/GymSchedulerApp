@@ -40,7 +40,7 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="schedules/scheduleEdit"
                                 options={{
-                                    presentation: 'modal',
+                                    presentation: 'transparentModal',
                                     title: 'Modifica scheda',
                                     headerShown: Platform.OS == 'android' ? false : true
                                 }}
@@ -48,7 +48,7 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="schedules/scheduleComponents/routinePlayer"
                                 options={{
-                                    presentation: 'containedModal',
+                                    presentation: 'transparentModal',
                                     headerShown: false,
                                 }}
                             />

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "PocketGym",
-    "slug": "5f8c1008-c3aa-48ee-989b-7e6a3c3bd38f",
+    "slug": "BlankProjectTSRedux",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#252c4a"
       },
       "permissions": [
@@ -50,6 +50,14 @@
           "sounds": [
             "assets/ring.mp3"
           ]
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],

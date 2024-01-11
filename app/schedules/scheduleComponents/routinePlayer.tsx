@@ -67,7 +67,7 @@ export default function RoutinePlayer() {
             if (currentRoutineExercise.rest) {
                 // start rest timer
                 setIsCountdown(true);
-                setStartTimerFrom(10);
+                setStartTimerFrom(currentRoutineExercise.rest);
                 setTimeout(() => {
                     setStartTimer(startTimer => !startTimer);
                 }, 0);
