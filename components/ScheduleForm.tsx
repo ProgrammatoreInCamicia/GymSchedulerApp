@@ -11,7 +11,6 @@ import { Schedule } from "../store/store.models";
 const ScheduleForm = (
     { onSubmit = () => { }, onCancel, schedule }: { onSubmit: () => void, onCancel: () => void, schedule: Schedule }
 ) => {
-    console.log('inside form schedule', schedule);
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
 

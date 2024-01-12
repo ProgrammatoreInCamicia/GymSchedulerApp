@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { searchExercises, searchTermChange } from "../../../store/exercises.reducer";
 import Input from "../../../components/Input";
 import InternalButton from "../../../components/button";
-import { saveExerciseInRoutine } from "../../../store/schedules.reducer";
+import { deleteExerciseInRoutine, saveExerciseInRoutine } from "../../../store/schedules.reducer";
 import { router } from "expo-router";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
@@ -94,9 +94,28 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     <View style={{ flex: 1 }}>
                         <Text style={[{ color: themeColor.text }]}>Exercise settings</Text>
                     </View>
-                    <TouchableOpacity onPress={() => saveExercise()}>
-                        <Text style={[{ color: themeColor.text }]}>Fatto</Text>
-                    </TouchableOpacity>
+                    <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+                        {currentExerciseGuid && (
+                            <TouchableOpacity style={[{
+                                backgroundColor: themeColor.error,
+                                paddingHorizontal: 10,
+                                paddingVertical: 5,
+                                borderRadius: 5
+                            }]} onPress={() =>
+                                deleteExercise()
+                            }>
+                                <Text style={[{ color: themeColor.text }]}>Elimina</Text>
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity style={[{
+                            backgroundColor: themeColor.success,
+                            paddingHorizontal: 10,
+                            paddingVertical: 5,
+                            borderRadius: 5
+                        }]} onPress={() => saveExercise()}>
+                            <Text style={[{ color: themeColor.text }]}>Fatto</Text>
+                        </TouchableOpacity>
+                    </View>
                     {/* <InternalButton label="Fatto" onPress={() => saveExercise()} /> */}
                 </View>
                 <View style={styles.centeredView}>
@@ -188,6 +207,13 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 guid: currentExerciseGuid
             }
         }));
+        setShowModal(false);
+        setShowExerciseModal(false);
+        resetExerciseData();
+    }
+
+    const deleteExercise = () => {
+        dispatch(deleteExerciseInRoutine({ routine, routineExerciseGuid: currentExerciseGuid }));
         setShowModal(false);
         setShowExerciseModal(false);
         resetExerciseData();

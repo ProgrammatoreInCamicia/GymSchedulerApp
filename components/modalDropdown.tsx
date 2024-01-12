@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 import Animated, { Easing, useAnimatedStyle, withTiming, useSharedValue, FadeInUp, FadeInDown } from 'react-native-reanimated';
 import InternalModal from "./modal";
+import CommonComponentsStyle from "../constants/CommonComponentsStyle";
 
 export default function ModalDropdown({ value, keyField, labelField, label, data, onSelect, onAddElement }: { value: any, keyField: string, labelField: string, label: string, data: any[], onSelect: (item: any) => void, onAddElement: () => void }) {
     const colorScheme = useColorScheme();
@@ -14,7 +15,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
     const [showModal, setShowModal] = useState(false);
 
     const renderItem = ({ item }: { item: any }) => (
-        <TouchableOpacity style={[styles.item, { backgroundColor: themeColor.background }]} onPress={() => {
+        <TouchableOpacity style={[CommonComponentsStyle.modalContentContainerItem, { backgroundColor: themeColor.background }]} onPress={() => {
             onSelect(item);
             setShowModal(false);
         }}>
@@ -27,7 +28,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
 
     const modalContent = () => {
         return (
-            <Animated.View style={[styles.modalContentContainer,
+            <Animated.View style={[CommonComponentsStyle.modalContentContainer,
             { backgroundColor: themeColor.background }]} entering={FadeInDown}>
                 <FlatList
                     data={data}
@@ -35,7 +36,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
                     keyExtractor={(item, index) => index.toString()}
                     style={styles.flatListStyle}
                 />
-                <TouchableOpacity style={[styles.item, { backgroundColor: themeColor.success }]} onPress={() => {
+                <TouchableOpacity style={[CommonComponentsStyle.modalContentContainerItem, { backgroundColor: themeColor.success }]} onPress={() => {
                     addElement()
 
                 }}>
@@ -115,26 +116,10 @@ const styles = StyleSheet.create({
     },
     icon: {
     },
-    modalContentContainer: {
-        // backgroundColor: 'red',
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-    },
     flatListStyle: {
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         maxHeight: 300
-    },
-    item: {
-        padding: 14,
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 10
     },
     itemText: {
         color: 'white',

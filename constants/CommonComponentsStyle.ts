@@ -28,5 +28,20 @@ export default StyleSheet.create({
         fontWeight: '500',
         padding: 15,
         textTransform: 'capitalize'
+    },
+    modalContentContainer: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+    },
+    modalContentContainerItem: {
+        padding: 14,
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 10
     }
 });

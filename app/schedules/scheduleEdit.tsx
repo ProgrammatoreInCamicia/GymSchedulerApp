@@ -1,4 +1,4 @@
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -10,6 +10,8 @@ import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 import { useEffect } from 'react';
 
 export default function scheduleEdit() {
+
+    const { insertMode } = useLocalSearchParams();
 
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
@@ -29,8 +31,11 @@ export default function scheduleEdit() {
     }
 
     useEffect(() => {
-        dispatch(resetCurrentSchedule());
-    }, []);
+        console.log(insertMode);
+        if ((insertMode as any) == true) {
+            dispatch(resetCurrentSchedule());
+        }
+    }, [insertMode]);
 
     return (
         <SafeAreaView style={[{ flex: 1, backgroundColor: themeColor.background }]}>
