@@ -73,7 +73,6 @@ export default function ExerciseDetailComponent() {
     }
 
     useEffect(() => {
-        console.log('id is changed')
         dispatch(getExercise(id));
     }, [id]);
 

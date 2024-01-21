@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-
 import Colors from "../../../../constants/Colors";
 import CommonComponentsStyle from "../../../../constants/CommonComponentsStyle";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { deleteExerciseInRoutine, guidGenerator, saveExerciseInRoutine } from "../../../../store/schedules.reducer";
 import Input from "../../../../components/Input";
@@ -179,7 +179,24 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                                                 </View>
                                             </View>
                                         </View>
-                                        <View style={[styles.separator, { borderBottomColor: themeColor.accent }]}></View>
+                                        <View style={[styles.separatorContainer]}>
+                                            <View style={[styles.separator, {
+                                                backgroundColor: themeColor.accent,
+                                                marginTop: index > 0 ? 12 : 0
+                                            }]}></View>
+                                            {index > 0 && (
+                                                <TouchableOpacity
+                                                    style={[styles.deleteSet, { backgroundColor: themeColor.accent }]}
+                                                    onPress={() => setSetsConfig(setsConfig.filter((_, i) => i !== index))}
+                                                >
+                                                    <FontAwesome5 name="trash" size={14} color={themeColor.error} />
+                                                </TouchableOpacity>
+                                            )}
+                                            <View style={[styles.separator, {
+                                                backgroundColor: themeColor.accent,
+                                                marginTop: index > 0 ? 12 : 0
+                                            }]}></View>
+                                        </View>
                                     </View>
                                 )
                             })}
@@ -292,9 +309,19 @@ const styles = StyleSheet.create({
         paddingRight: 5,
         borderRightWidth: 2,
     },
-    separator: {
-        borderBottomWidth: 1,
-        paddingVertical: 5,
+    separatorContainer: {
+        flexDirection: 'row',
         marginBottom: 10
     },
+    separator: {
+        flex: 1,
+        height: 1
+    },
+    deleteSet: {
+        width: 25,
+        height: 25,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 });
