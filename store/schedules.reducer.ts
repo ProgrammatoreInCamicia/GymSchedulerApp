@@ -75,6 +75,15 @@ const schedulesReducer = createSlice({
             });
             state.currentSchedule = state.schedules[scheduleToChangeIndex];
         },
+        setExercisesInRoutine: (state, action: PayloadAction<{ routineExercises: RoutineExercise[], routine: Routine }>) => {
+            let scheduleToChangeIndex = state.schedules
+                .findIndex(s => s.guid == action.payload.routine.scheduleId)
+            let routineToChangeIndex = state.schedules[scheduleToChangeIndex]
+                .routines.findIndex(r => r.guid == action.payload.routine.guid);
+            state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises = action.payload.routineExercises;
+            console.log('setExercisesInRoutine');
+            state.currentSchedule = state.schedules[scheduleToChangeIndex];
+        },
         saveExerciseInRoutine: (state, action: PayloadAction<{ routineExercise: RoutineExercise, routine: Routine }>) => {
             let scheduleToChangeIndex = state.schedules
                 .findIndex(s => s.guid == action.payload.routine.scheduleId)
@@ -143,6 +152,7 @@ export const {
     addWorkoutStatistics,
     deleteCurrentSchedule,
     deleteExerciseInRoutine,
-    deleteSchedule
+    deleteSchedule,
+    setExercisesInRoutine,
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

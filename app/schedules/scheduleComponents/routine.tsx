@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
-import { Routine } from "../../../store/store.models";
+import { Routine, RoutineExercise } from "../../../store/store.models";
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle";
 import Colors from "../../../constants/Colors";
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { searchExercises, searchTermChange } from "../../../store/exercises.reducer";
 import { router } from "expo-router";
 import ExerciseSettingsInSchedule from "./components/exerciseSettingsInSchedule";
+import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
+import { setExercisesInRoutine } from "../../../store/schedules.reducer";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
     const colorScheme = useColorScheme();
@@ -81,69 +83,116 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
     return (
         <View style={[{ flex: 1 }]}>
             {/* Start Routine Exercises */}
-            <ScrollView style={[{ flex: 1 }]}>
-                {routine.exercises.length == 0 && (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Image style={{ width: 200, height: 200 }} source={require('../../../assets/4.png')} />
-                        <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Add some exercises</Text>
-                    </View>
-                )}
+            {/* <ScrollView style={[{ flex: 1 }]}> */}
+            {routine.exercises.length == 0 && (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Image style={{ width: 200, height: 200 }} source={require('../../../assets/4.png')} />
+                    <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Add some exercises</Text>
+                </View>
+            )}
 
-                {routine.exercises.length > 0 && (
-                    routine.exercises.map((routineExercise) => (
-                        <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
-                            <ExerciseItem
-                                item={routineExercise.exercise}
-                                key={routineExercise.guid}
-                                exercisePressed={() => {
-                                    // setShowModal(true);
-                                    setTimeout(() => {
-                                        changeSelectedExercise(routineExercise.exercise._id, routineExercise.guid);
-                                        // setSets(routineExercise.sets.toString());
-                                        // setreps(routineExercise.reps.toString());
-                                        // settime(routineExercise.rest.toString());
-                                        // setCurrentExerciseGuid(routineExercise.guid);
+            {routine.exercises.length > 0 && (
+                <DraggableFlatList
+                    data={routine.exercises}
+                    onDragEnd={({ data }: { data: RoutineExercise[] }) =>
+                        dispatch(setExercisesInRoutine({ routine: routine, routineExercises: data }))
+                    }
+                    keyExtractor={item => item.guid}
+                    renderItem={({ item, drag, isActive }) => (
+                        <ScaleDecorator>
+                            <TouchableOpacity
+                                onLongPress={drag}
+                                disabled={isActive}>
+                                <View style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
+                                    <ExerciseItem
+                                        item={item.exercise}
+                                        exercisePressed={() => {
+                                            // setShowModal(true);
+                                            setTimeout(() => {
+                                                changeSelectedExercise(item.exercise._id, item.guid);
+                                                // setSets(routineExercise.sets.toString());
+                                                // setreps(routineExercise.reps.toString());
+                                                // settime(routineExercise.rest.toString());
+                                                // setCurrentExerciseGuid(routineExercise.guid);
 
-                                    });
-                                }}
-                                customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
-                            />
-                            <View style={[{ flexDirection: 'row' }]}>
-                                <View style={[styles.setsContainerPreview]}>
-                                    <Text style={[{ color: themeColor.text }]}>Sets: </Text>
-                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                                        {routineExercise.setsConfig.map(s => s.sets).join(' - ')}
-                                    </Text>
+                                            });
+                                        }}
+                                        customDescription={'rest time: ' + item.rest + ' seconds'}
+                                    />
+                                    <View style={[{ flexDirection: 'row' }]}>
+                                        <View style={[styles.setsContainerPreview]}>
+                                            <Text style={[{ color: themeColor.text }]}>Sets: </Text>
+                                            <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                                                {item.setsConfig.map(s => s.sets).join(' - ')}
+                                            </Text>
+                                        </View>
+                                        <View style={[styles.setsContainerPreview]}>
+                                            <Text style={[{ color: themeColor.text }]}>Reps: </Text>
+                                            <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                                                {item.setsConfig.map(s => s.reps).join(' - ')}
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={[styles.setsContainerPreview]}>
-                                    <Text style={[{ color: themeColor.text }]}>Reps: </Text>
-                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                                        {routineExercise.setsConfig.map(s => s.reps).join(' - ')}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                    ))
-                )}
-                <View style={{ height: 60 }}></View>
+                            </TouchableOpacity>
+                        </ScaleDecorator>
 
-                <InternalModal
-                    showModal={showModal}
-                    removeModal={() => setShowModal(false)}
-                    content={exercisesModalContent}
-                    preventRemove={true}
+                    )}
                 />
+                // routine.exercises.map((routineExercise) => (
+                //     <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
+                //         <ExerciseItem
+                //             item={routineExercise.exercise}
+                //             key={routineExercise.guid}
+                //             exercisePressed={() => {
+                //                 // setShowModal(true);
+                //                 setTimeout(() => {
+                //                     changeSelectedExercise(routineExercise.exercise._id, routineExercise.guid);
+                //                     // setSets(routineExercise.sets.toString());
+                //                     // setreps(routineExercise.reps.toString());
+                //                     // settime(routineExercise.rest.toString());
+                //                     // setCurrentExerciseGuid(routineExercise.guid);
 
-                {showChangeExerciseModal && (
-                    <ExerciseSettingsInSchedule
-                        exerciseId={currentExerciseGuid}
-                        routineId={routine.guid}
-                        routineExerciseGuid={routineExerciseGuid}
-                        onSetShowExerciseModal={() => setShowChangeExerciseModal(false)}
-                    />
-                )}
+                //                 });
+                //             }}
+                //             customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
+                //         />
+                //         <View style={[{ flexDirection: 'row' }]}>
+                //             <View style={[styles.setsContainerPreview]}>
+                //                 <Text style={[{ color: themeColor.text }]}>Sets: </Text>
+                //                 <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                //                     {routineExercise.setsConfig.map(s => s.sets).join(' - ')}
+                //                 </Text>
+                //             </View>
+                //             <View style={[styles.setsContainerPreview]}>
+                //                 <Text style={[{ color: themeColor.text }]}>Reps: </Text>
+                //                 <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                //                     {routineExercise.setsConfig.map(s => s.reps).join(' - ')}
+                //                 </Text>
+                //             </View>
+                //         </View>
+                //     </View>
+                // ))
+            )}
+            <View style={{ height: 60 }}></View>
 
-            </ScrollView>
+            <InternalModal
+                showModal={showModal}
+                removeModal={() => setShowModal(false)}
+                content={exercisesModalContent}
+                preventRemove={true}
+            />
+
+            {showChangeExerciseModal && (
+                <ExerciseSettingsInSchedule
+                    exerciseId={currentExerciseGuid}
+                    routineId={routine.guid}
+                    routineExerciseGuid={routineExerciseGuid}
+                    onSetShowExerciseModal={() => setShowChangeExerciseModal(false)}
+                />
+            )}
+
+            {/* </ScrollView> */}
             {/* End Routine Exercises */}
 
             {/* Start Routine control menu */}

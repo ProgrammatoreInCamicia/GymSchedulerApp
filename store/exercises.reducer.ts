@@ -53,6 +53,15 @@ const exercisesReducer = createSlice({
         searchTermChange: (state, action: PayloadAction<string>) => {
             state.filter.searchTerm = action.payload
         },
+        deleteCurrentExercise: (state) => {
+            state.exerciseDetail = {
+                _id: null,
+                name: '',
+                images: [],
+                primaryMuscles: [],
+                secondaryMuscles: []
+            }
+        }
     },
     extraReducers: builder => {
         builder
@@ -103,5 +112,5 @@ const exercisesReducer = createSlice({
 
 
 
-export const { init, searchTermChange } = exercisesReducer.actions
+export const { init, searchTermChange, deleteCurrentExercise } = exercisesReducer.actions
 export default exercisesReducer.reducer;

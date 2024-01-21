@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Image, useColorScheme } from 'react-native';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { Exercise } from '../store/store.models';
@@ -57,8 +57,16 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item:
 
 const ExercisesComponent = ({ exercises, exercisePressed }: { exercises: Exercise[], exercisePressed: (id: string) => void }) => {
 
+    const flatListRef = useRef(null);
+
+    useEffect(() => {
+        // Scroll to the top when the exercises data changes
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }, [exercises]);
+
     return (
         <FlatList
+            ref={flatListRef}
             data={exercises}
             keyExtractor={(exercise) => exercise._id}
             removeClippedSubviews={true}

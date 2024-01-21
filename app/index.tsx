@@ -3,7 +3,7 @@ import Colors from '../constants/Colors';
 import SearchBar from '../components/searchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
-import { searchExercises, searchTermChange } from '../store/exercises.reducer';
+import { deleteCurrentExercise, searchExercises, searchTermChange } from '../store/exercises.reducer';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ExercisesComponent } from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
@@ -35,6 +35,7 @@ export default function Page() {
   useEffect(() => {
     // dispatch(fetchExercises());
     // dispatch(deleteSchedule());
+    // dispatch(deleteCurrentExercise());
   }, []);
 
   return (

@@ -36,7 +36,7 @@ export default function ExerciseDetailComponent() {
             <View style={{ padding: 10 }}>
                 {detail == 'instructions' && (
                     <View style={{ gap: 15 }}>
-                        {currentExercise?.instructions.map((singleRow, index) => {
+                        {currentExercise?.instructions?.map((singleRow, index) => {
                             return (
                                 <Text key={index} style={{ color: 'white', fontSize: 14 }}>{index + 1}. {singleRow}</Text>
                             )
