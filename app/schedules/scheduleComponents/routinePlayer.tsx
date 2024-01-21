@@ -24,22 +24,23 @@ export default function RoutinePlayer() {
     const themeColor = Colors[colorScheme ?? 'light'];
 
     const routine = useAppSelector((state) => state.schedules.currentSchedule.routines.find(r => r.guid == routineId));
-
     const [startTimer, setStartTimer] = useState(false);
     const [stopTimer, setStopTimer] = useState(false);
     const [isCountdown, setIsCountdown] = useState(false);
     const [startTimerFrom, setStartTimerFrom] = useState(0);
 
+    const [currentConfigSet, setCurrentConfigSet] = useState(0);
+
     const [currentSet, setCurrentSet] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [currentRoutineExercise, setSurrentRoutineExercise] = useState<RoutineExercise>(null);
+    const [currentRoutineExercise, setCurrentRoutineExercise] = useState<RoutineExercise>(null);
 
     const [coutdownFinished, setCoutdownFinished] = useState(false);
     // start timer on open
     useEffect(() => {
-        setSurrentRoutineExercise(routine.exercises[0]);
+        setCurrentRoutineExercise(routine.exercises[0]);
         setStartTimer(true);
-    }, []);
+    }, [routineId]);
 
     const [totalRoutineTime, setTotalRoutineTime] = useState(0);
     const timerChildRef = useRef<any>();
@@ -52,18 +53,30 @@ export default function RoutinePlayer() {
         // skip coutdown
         if (isCountdown) {
             setTotalRoutineTime(total => total + (currentRoutineExercise.rest - getTimerChildState()));
-            if ((currentRoutineExercise.sets - 1) > currentSet) {
+
+            if ((currentRoutineExercise.setsConfig[currentConfigSet].sets - 1) > currentSet) {
                 goToNextSet()
             } else {
-                goToNextExercise()
+                if (currentRoutineExercise.setsConfig.length > currentConfigSet + 1) {
+                    // go to next setConfig
+                    goToNextSetConfig();
+                } else {
+                    goToNextExercise();
+                }
             }
+
+            // if ((currentRoutineExercise.sets - 1) > currentSet) {
+            //     goToNextSet()
+            // } else {
+            //     goToNextExercise()
+            // }
             return;
         }
         setTotalRoutineTime(total => total + getTimerChildState());
         setStopTimer(stopTimer => !stopTimer);
 
         // // Check if current set is not the last inside current exercise
-        if ((currentRoutineExercise.sets - 1) > currentSet) {
+        if ((currentRoutineExercise.setsConfig[currentConfigSet].sets - 1) > currentSet) {
             if (currentRoutineExercise.rest) {
                 // start rest timer
                 setIsCountdown(true);
@@ -77,14 +90,57 @@ export default function RoutinePlayer() {
                 goToNextSet()
             }
         } else {
-            goToNextExercise()
+            if (currentRoutineExercise.setsConfig.length > currentConfigSet + 1) {
+                if (currentRoutineExercise.rest) {
+                    // start rest timer
+                    setIsCountdown(true);
+                    setStartTimerFrom(currentRoutineExercise.rest);
+                    setTimeout(() => {
+                        setStartTimer(startTimer => !startTimer);
+                    }, 0);
+                }
+                else {
+                    // go to next setConfig
+                    goToNextSetConfig();
+                }
+            } else {
+                goToNextExercise();
+            }
         }
+
+        // if ((currentRoutineExercise.sets - 1) > currentSet) {
+        //     if (currentRoutineExercise.rest) {
+        //         // start rest timer
+        //         setIsCountdown(true);
+        //         setStartTimerFrom(currentRoutineExercise.rest);
+        //         setTimeout(() => {
+        //             setStartTimer(startTimer => !startTimer);
+        //         }, 0);
+        //     }
+        //     else {
+        //         // go to next set
+        //         goToNextSet()
+        //     }
+        // } else {
+        //     goToNextExercise()
+        // }
 
     }
 
     const goToNextSet = () => {
         setStartTimerFrom(0);
         setCurrentSet(set => set + 1);
+        setStopTimer(stopTimer => !stopTimer);
+        setIsCountdown(false);
+        setTimeout(() => {
+            setStartTimer(startTimer => !startTimer);
+        }, 0);
+    }
+
+    const goToNextSetConfig = () => {
+        setStartTimerFrom(0);
+        setCurrentConfigSet(configSet => configSet + 1);
+        setCurrentSet(0);
         setStopTimer(stopTimer => !stopTimer);
         setIsCountdown(false);
         setTimeout(() => {
@@ -101,6 +157,7 @@ export default function RoutinePlayer() {
             router.push('statistics');
         } else {
             onPageSelected(currentPage + 1);
+            setCurrentConfigSet(0);
             setCurrentSet(0);
             setStartTimerFrom(0);
             setStartTimer(startTimer => !startTimer);
@@ -118,54 +175,72 @@ export default function RoutinePlayer() {
     const stopSoundAndGoNext = () => {
         stopSound();
         setCoutdownFinished(false);
-        if ((currentRoutineExercise.sets - 1) > currentSet) {
-            goToNextSet();
+        if ((currentRoutineExercise.setsConfig[currentConfigSet].sets - 1) > currentSet) {
+            goToNextSet()
         } else {
-            goToNextExercise();
+            if (currentRoutineExercise.setsConfig.length > currentConfigSet + 1) {
+                // go to next setConfig
+                goToNextSetConfig();
+            } else {
+                goToNextExercise();
+            }
         }
+        // if ((currentRoutineExercise.sets - 1) > currentSet) {
+        //     goToNextSet();
+        // } else {
+        //     goToNextExercise();
+        // }
     }
 
     const onPageSelected = (page: number) => {
         setCurrentPage(page);
-        setSurrentRoutineExercise(routine.exercises[page]);
+        setCurrentRoutineExercise(routine.exercises[page]);
     }
 
     const pagerContent = (exercise: RoutineExercise) => {
-        let array = Array.from(Array(exercise.sets).keys());
+        let generalIndexCount = 0;
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>{exercise.exercise.name}</Text>
                 <ScrollView>
-                    {array.map((el, i) => {
-                        return (
-                            <View key={i} style={[styles.setContainer, {
-                                backgroundColor: currentSet == i ? themeColor.success : themeColor.black + 60
-                            }]}>
-                                <View style={[styles.setCounter, { backgroundColor: themeColor.white }]}>
-                                    <Text>{i + 1}</Text>
-                                </View>
-                                <View style={[styles.setValueContainer]}>
-                                    <View style={[
-                                        styles.setCounter,
-                                        styles.setValue,
-                                        { backgroundColor: themeColor.background }
-                                    ]}>
-                                        <Text style={{ color: themeColor.text, fontWeight: '500' }}>{exercise.reps}</Text>
+                    {exercise.setsConfig.map((setConfig, setConfigIndex) => {
+                        let array = Array.from(Array(setConfig.sets).keys());
+                        return array.map((el, i) => {
+                            generalIndexCount++;
+                            return (
+                                <View key={i} style={[styles.setContainer, {
+                                    backgroundColor: currentRoutineExercise?.guid === exercise.guid &&
+                                        currentConfigSet === setConfigIndex
+                                        && currentSet == i
+                                        ? themeColor.success : themeColor.black + 60
+                                }]}>
+                                    <View style={[styles.setCounter, { backgroundColor: themeColor.white }]}>
+                                        <Text>{generalIndexCount}</Text>
                                     </View>
-                                    <Text style={{ color: themeColor.text }}>Reps</Text>
-                                </View>
-                                <View style={[styles.setValueContainer]}>
-                                    <View style={[
-                                        styles.setCounter,
-                                        styles.setValue,
-                                        { backgroundColor: themeColor.background }
-                                    ]}>
-                                        <Text style={{ color: themeColor.text, fontWeight: '500' }}>{exercise.weight}</Text>
+                                    <View style={[styles.setValueContainer]}>
+                                        <View style={[
+                                            styles.setCounter,
+                                            styles.setValue,
+                                            { backgroundColor: themeColor.background }
+                                        ]}>
+                                            <Text style={{ color: themeColor.text, fontWeight: '500' }}>{setConfig.reps}</Text>
+                                        </View>
+                                        <Text style={{ color: themeColor.text }}>Reps</Text>
                                     </View>
-                                    <Text style={{ color: themeColor.text }}>Kg</Text>
+                                    <View style={[styles.setValueContainer]}>
+                                        <View style={[
+                                            styles.setCounter,
+                                            styles.setValue,
+                                            { backgroundColor: themeColor.background }
+                                        ]}>
+                                            <Text style={{ color: themeColor.text, fontWeight: '500' }}>{setConfig.weight}</Text>
+                                        </View>
+                                        <Text style={{ color: themeColor.text }}>Kg</Text>
+                                    </View>
                                 </View>
-                            </View>
-                        );
+                            );
+
+                        })
                     })}
                 </ScrollView>
             </View>
@@ -239,7 +314,7 @@ export default function RoutinePlayer() {
                 </View>
             </View>
             <View style={[{ backgroundColor: themeColor.black + 40, padding: 20 }]}>
-                <InternalButton label={isCountdown ? "Skip" : "Fatto"} onPress={() => {
+                <InternalButton label={isCountdown && !coutdownFinished ? "Skip" : "Fatto"} onPress={() => {
                     if (!coutdownFinished)
                         goNext();
                     else

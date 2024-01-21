@@ -138,7 +138,7 @@ export default function Page() {
             keyField='guid'
             labelField='title'
             onSelect={onSelect}
-            onAddElement={() => router.push('/schedules/scheduleEdit')}
+            onAddElement={() => router.push({ pathname: '/schedules/scheduleEdit', params: { insertMode: true } })}
           />
         </View>
         <TouchableOpacity onPress={() => setShowScheduleMenuShowModal(true)} style={[styles.scheduleManagerMenuButton, {}]}>

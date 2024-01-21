@@ -8,7 +8,8 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ExercisesComponent } from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
 import CommonComponentsStyle from '../constants/CommonComponentsStyle';
-// import { deleteSchedule } from '../store/schedules.reducer';
+import { router } from 'expo-router';
+import { deleteSchedule } from '../store/schedules.reducer';
 
 export default function Page() {
   const colorScheme = useColorScheme();
@@ -27,8 +28,8 @@ export default function Page() {
     await dispatch(searchExercises(term));
   }
 
-  function exercisePressed() {
-
+  function exercisePressed(id: string) {
+    router.push({ pathname: '/exercise', params: { id } });
   }
 
   useEffect(() => {

@@ -13,7 +13,14 @@ const initialState: ExerciseStore = {
     error: '',
     filter: {
         searchTerm: ''
-    }
+    },
+    exerciseDetail: {
+        _id: null,
+        name: '',
+        images: [],
+        primaryMuscles: [],
+        secondaryMuscles: []
+    },
 }
 
 export const fetchExercises = createAsyncThunk('exercises/fetchExercises', async () => {
@@ -24,7 +31,17 @@ export const fetchExercises = createAsyncThunk('exercises/fetchExercises', async
 export const searchExercises = createAsyncThunk('exercises/searchExercises', async (term: string) => {
     let params = `name=${term}`;
     const response = await expressService.get(`/exercises?${params}`);
-    return response.data.response;
+    let exercises: Exercise[] = response.data.response;
+
+    return exercises;
+});
+
+export const getExercise = createAsyncThunk('exercises/getExercise', async (id: string) => {
+    // let params = `id=${id}`;
+    const response = await expressService.get(`/${id}`);
+    let exercise: Exercise = response.data.response;
+    console.log('get exercise: ', exercise);
+    return exercise;
 });
 
 
@@ -47,6 +64,18 @@ const exercisesReducer = createSlice({
                 state.loading = false
             })
             .addCase(fetchExercises.rejected, (state, action) => {
+                state.exercises = []
+                state.loading = false,
+                    state.error = action.error.message || 'Something went wrong'
+            })
+            .addCase(getExercise.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(getExercise.fulfilled, (state, action: PayloadAction<Exercise>) => {
+                state.exerciseDetail = action.payload
+                state.loading = false
+            })
+            .addCase(getExercise.rejected, (state, action) => {
                 state.exercises = []
                 state.loading = false,
                     state.error = action.error.message || 'Something went wrong'

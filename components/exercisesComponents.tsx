@@ -7,6 +7,7 @@ import Colors from '../constants/Colors';
 const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item: Exercise, exercisePressed: (id: string) => void, customDescription?: string }) => {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
+
     return (
         <View style={{ backgroundColor: themeColor.background, borderRadius: 20 }}>
             <TouchableOpacity style={[styles.exerciseContainer, {
@@ -14,24 +15,24 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item:
                 backgroundColor: themeColor.secondary + 20,
             }]} onPress={() => exercisePressed(item._id)}>
                 <Image
-                    source={{ uri: item.images[0] }}
+                    source={{ uri: `${process.env.EXPO_PUBLIC_API_BASE_URL}/images/${item.images[0]}` }}
                     style={[styles.image, { backgroundColor: 'white' }]} />
                 <View style={styles.exerciseMainDataContainer}>
                     <View style={styles.difficultyContainer}>
                         <FontAwesome name="minus" size={24} style={{
                             color: item.difficulty == 'beginner' ?
-                                themeColor.success : item.difficulty == 'intermediate' || 'default' ?
+                                themeColor.success : (item.difficulty == 'intermediate' || item.difficulty == 'default') ?
                                     themeColor.secondary : themeColor.error,
                             marginTop: -10,
                         }} />
                         <FontAwesome name="minus" size={24} style={{
                             color: item.difficulty == 'beginner' ?
-                                themeColor.text : item.difficulty == 'intermediate' || 'default' ?
+                                themeColor.text : (item.difficulty == 'intermediate' || item.difficulty == 'default') ?
                                     themeColor.secondary : themeColor.error, marginTop: -10,
                         }} />
                         <FontAwesome name="minus" size={24} style={{
                             color: item.difficulty == 'beginner' ?
-                                themeColor.text : item.difficulty == 'intermediate' || 'default' ?
+                                themeColor.text : (item.difficulty == 'intermediate' || item.difficulty == 'default') ?
                                     themeColor.text : themeColor.error, marginTop: -10,
                         }} />
                     </View>
@@ -39,7 +40,7 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item:
                     {!customDescription && (
                         <View style={styles.targetContainer}>
                             <Feather name="target" size={14} style={{ color: themeColor.text }} />
-                            <Text ellipsizeMode='tail' numberOfLines={1} style={[styles.text, { color: themeColor.text + 90 }]}>{item.target}</Text>
+                            <Text ellipsizeMode='tail' numberOfLines={1} style={[styles.text, { color: themeColor.text + 90 }]}>{item?.primaryMuscles[0]}</Text>
                         </View>
                     )}
                     {customDescription && (

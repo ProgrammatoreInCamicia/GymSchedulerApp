@@ -74,7 +74,8 @@ const ScheduleForm = (
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        gap: 5
+        gap: 5,
+        marginTop: 50
     },
     datesContainer: {
         display: 'flex',

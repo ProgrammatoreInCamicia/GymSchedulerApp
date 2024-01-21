@@ -7,15 +7,17 @@ const Input = ({
     disabled = false, inputMode = "text", multiline = false, height = 40,
     placeholder, onValueChange = Function, onValueSubmit = () => { }, onInputPressed = () => { }
 }: {
-    value: string, label?: string, disabled?: boolean, inputMode?: InputModeOptions, multiline?: boolean,
+    value: any, label?: string, disabled?: boolean, inputMode?: InputModeOptions, multiline?: boolean,
     height?: number, placeholder?: string, onValueChange?: (value: string) => void,
     onValueSubmit?: () => void, onInputPressed?: () => void
 }) => {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
     return (
-        <View style={styles.inputContainer}>
-            <Text style={[styles.label, { color: themeColor.text }]}>{label}</Text>
+        <View style={[styles.inputContainer, {}]}>
+            {label && (
+                <Text style={[styles.label, { color: themeColor.text }]}>{label}</Text>
+            )}
             <View style={[styles.inputBackgroundStyle, { height: height }]}>
                 <TextInput
                     value={value}

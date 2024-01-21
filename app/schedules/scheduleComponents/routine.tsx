@@ -10,10 +10,8 @@ import SearchBar from "../../../components/searchBar";
 import { ExercisesComponent, ExerciseItem } from "../../../components/exercisesComponents";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { searchExercises, searchTermChange } from "../../../store/exercises.reducer";
-import Input from "../../../components/Input";
-import InternalButton from "../../../components/button";
-import { deleteExerciseInRoutine, saveExerciseInRoutine } from "../../../store/schedules.reducer";
 import { router } from "expo-router";
+import ExerciseSettingsInSchedule from "./components/exerciseSettingsInSchedule";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
     const colorScheme = useColorScheme();
@@ -34,19 +32,21 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
     const exercises = useAppSelector((state) => state.exercises.exercises);
 
     function exercisePressed(id: string) {
-        setCurrentExercise(exercises.find(ex => ex._id == id));
+        setCurrentExerciseGuid(id);
         setShowExerciseModal(true);
     }
 
-    const [showExerciseModal, setShowExerciseModal] = useState(false);
+    function changeSelectedExercise(id: string, routineExerciseGuid: string) {
+        setCurrentExerciseGuid(id);
+        setRoutineExerciseGuid(routineExerciseGuid);
+        setShowChangeExerciseModal(true);
+    }
 
-    const [currentExercise, setCurrentExercise] = useState(null);
-    const [note, setNote] = useState('');
-    const [sets, setSets] = useState('');
-    const [reps, setreps] = useState('');
+    const [showExerciseModal, setShowExerciseModal] = useState(false);
+    const [showChangeExerciseModal, setShowChangeExerciseModal] = useState(false);
+    const [routineExerciseGuid, setRoutineExerciseGuid] = useState(null);
+
     const [currentExerciseGuid, setCurrentExerciseGuid] = useState('');
-    const [weight, setweight] = useState('');
-    const [time, settime] = useState('');
 
     const exercisesModalContent = () => {
         return (
@@ -67,164 +67,15 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     </View>
                 </View>
                 <ExercisesComponent exercises={exercises} exercisePressed={exercisePressed} />
-                <InternalModal
-                    showModal={showExerciseModal}
-                    removeModal={() => setShowExerciseModal(false)}
-                    content={exercisesSettingsModalContent}
-                    preventRemove={true}
-                />
+                {showExerciseModal && (
+                    <ExerciseSettingsInSchedule
+                        exerciseId={currentExerciseGuid}
+                        routineId={routine.guid}
+                        onSetShowExerciseModal={() => setShowExerciseModal(false)}
+                    />
+                )}
             </Animated.View>
         )
-    }
-
-    const exercisesSettingsModalContent = () => {
-        return (
-            <Animated.View
-                style={[
-                    styles.addExercisesModalContainer,
-                    { backgroundColor: themeColor.background },
-                    CommonComponentsStyle.container
-                ]}
-                entering={FadeIn}
-            >
-                <View style={[styles.searchExerciseContainer, { marginTop: 15, marginBottom: 10 }]}>
-                    <TouchableOpacity onPress={() => setShowExerciseModal(false)}>
-                        <Ionicons name="chevron-back" size={24} color={themeColor.text} />
-                    </TouchableOpacity>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[{ color: themeColor.text }]}>Exercise settings</Text>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-                        {currentExerciseGuid && (
-                            <TouchableOpacity style={[{
-                                backgroundColor: themeColor.error,
-                                paddingHorizontal: 10,
-                                paddingVertical: 5,
-                                borderRadius: 5
-                            }]} onPress={() =>
-                                deleteExercise()
-                            }>
-                                <Text style={[{ color: themeColor.text }]}>Elimina</Text>
-                            </TouchableOpacity>
-                        )}
-                        <TouchableOpacity style={[{
-                            backgroundColor: themeColor.success,
-                            paddingHorizontal: 10,
-                            paddingVertical: 5,
-                            borderRadius: 5
-                        }]} onPress={() => saveExercise()}>
-                            <Text style={[{ color: themeColor.text }]}>Fatto</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {/* <InternalButton label="Fatto" onPress={() => saveExercise()} /> */}
-                </View>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>
-                            {currentExercise?.name}
-                        </Text>
-                        <View style={[styles.setsContainer, { backgroundColor: themeColor.secondary + 20 }]}>
-                            <View style={styles.setContainer}>
-                                <View style={styles.setPiece}>
-                                    <View style={{ flex: 1 }}>
-                                        <Input
-                                            inputMode="decimal"
-                                            value={sets}
-                                            onValueChange={(sets) => {
-                                                setSets(sets);
-                                            }}
-                                        />
-                                    </View>
-                                    <View style={[styles.setPieceLabel, { borderRightColor: themeColor.accent }]}>
-                                        <Text style={[{ color: themeColor.text }]}>Sets</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.setPiece}>
-                                    <View style={{ flex: 1 }}>
-                                        <Input
-                                            inputMode="decimal"
-                                            value={reps}
-                                            onValueChange={(reps) => {
-                                                setreps(reps);
-                                            }}
-                                        />
-                                    </View>
-                                    <View style={[styles.setPieceLabel, { borderRightWidth: 0 }]}>
-                                        <Text style={[{ color: themeColor.text }]}>Reps</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.setPiece}>
-                                    <View style={{ flex: 1 }}>
-                                        <Input
-                                            inputMode="decimal"
-                                            value={weight}
-                                            onValueChange={(weight) => {
-                                                setweight(weight);
-                                            }}
-                                        />
-                                    </View>
-                                    <View style={[styles.setPieceLabel, { borderRightWidth: 0 }]}>
-                                        <Text style={[{ color: themeColor.text }]}>Kg</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={[styles.separator, { borderBottomColor: themeColor.accent }]}></View>
-                            <View>
-                                <Input
-                                    inputMode="decimal"
-                                    label="Rest (in seconds)"
-                                    value={time}
-                                    onValueChange={(rest) => {
-                                        settime(rest);;
-                                    }}
-                                />
-                            </View>
-                        </View>
-                        <Text style={[{ marginTop: 15, color: themeColor.text }]}>Note</Text>
-                        <Input
-                            multiline={true}
-                            height={200}
-                            value={note}
-                            onValueChange={(note) => {
-                                setNote(note);
-                            }}
-                        />
-                    </View>
-                </View>
-            </Animated.View>
-        )
-    }
-
-    const saveExercise = () => {
-        dispatch(saveExerciseInRoutine({
-            routine,
-            routineExercise: {
-                exercise: currentExercise,
-                reps: +reps,
-                rest: +time,
-                sets: +sets,
-                weight: +weight,
-                guid: currentExerciseGuid
-            }
-        }));
-        setShowModal(false);
-        setShowExerciseModal(false);
-        resetExerciseData();
-    }
-
-    const deleteExercise = () => {
-        dispatch(deleteExerciseInRoutine({ routine, routineExerciseGuid: currentExerciseGuid }));
-        setShowModal(false);
-        setShowExerciseModal(false);
-        resetExerciseData();
-    }
-
-    const resetExerciseData = () => {
-        setSets('');
-        setreps('');
-        setweight('');
-        setNote('');
-        setCurrentExercise(null);
     }
 
     return (
@@ -245,13 +96,13 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                                 item={routineExercise.exercise}
                                 key={routineExercise.guid}
                                 exercisePressed={() => {
-                                    setShowModal(true);
+                                    // setShowModal(true);
                                     setTimeout(() => {
-                                        exercisePressed(routineExercise.exercise._id);
-                                        setSets(routineExercise.sets.toString());
-                                        setreps(routineExercise.reps.toString());
-                                        settime(routineExercise.rest.toString());
-                                        setCurrentExerciseGuid(routineExercise.guid);
+                                        changeSelectedExercise(routineExercise.exercise._id, routineExercise.guid);
+                                        // setSets(routineExercise.sets.toString());
+                                        // setreps(routineExercise.reps.toString());
+                                        // settime(routineExercise.rest.toString());
+                                        // setCurrentExerciseGuid(routineExercise.guid);
 
                                     });
                                 }}
@@ -260,11 +111,15 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                             <View style={[{ flexDirection: 'row' }]}>
                                 <View style={[styles.setsContainerPreview]}>
                                     <Text style={[{ color: themeColor.text }]}>Sets: </Text>
-                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.sets}</Text>
+                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                                        {routineExercise.setsConfig.map(s => s.sets).join(' - ')}
+                                    </Text>
                                 </View>
                                 <View style={[styles.setsContainerPreview]}>
                                     <Text style={[{ color: themeColor.text }]}>Reps: </Text>
-                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>{routineExercise.reps}</Text>
+                                    <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
+                                        {routineExercise.setsConfig.map(s => s.reps).join(' - ')}
+                                    </Text>
                                 </View>
                             </View>
                         </View>
@@ -278,6 +133,15 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     content={exercisesModalContent}
                     preventRemove={true}
                 />
+
+                {showChangeExerciseModal && (
+                    <ExerciseSettingsInSchedule
+                        exerciseId={currentExerciseGuid}
+                        routineId={routine.guid}
+                        routineExerciseGuid={routineExerciseGuid}
+                        onSetShowExerciseModal={() => setShowChangeExerciseModal(false)}
+                    />
+                )}
 
             </ScrollView>
             {/* End Routine Exercises */}
@@ -341,37 +205,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 30,
         alignItems: 'center',
-    },
-    centeredView: {
-        flex: 1,
-    },
-    modalView: {
-        // alignItems: 'center'
-    },
-    setsContainer: {
-        width: '100%',
-        borderRadius: 5,
-        padding: 10
-    },
-    setContainer: {
-        flexDirection: 'row',
-        gap: 10
-    },
-    setPiece: {
-        flex: 1,
-        flexDirection: 'row',
-        gap: 5
-    },
-    setPieceLabel: {
-        marginTop: 10,
-        alignSelf: 'center',
-        paddingVertical: 7,
-        paddingRight: 5,
-        borderRightWidth: 2,
-    },
-    separator: {
-        borderBottomWidth: 1,
-        paddingVertical: 5
     },
     previewContainer: {
         borderRadius: 20,

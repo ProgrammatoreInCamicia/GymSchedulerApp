@@ -16,7 +16,7 @@ const initialState: ScheduleStore = {
     schedules: [{ ...initialCurrentScheduleState }]
 };
 
-function guidGenerator() {
+export function guidGenerator() {
     var S4 = function () {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
@@ -80,18 +80,17 @@ const schedulesReducer = createSlice({
                 .findIndex(s => s.guid == action.payload.routine.scheduleId)
             let routineToChangeIndex = state.schedules[scheduleToChangeIndex]
                 .routines.findIndex(r => r.guid == action.payload.routine.guid);
-            if (action.payload.routineExercise.guid != "") {
-                console.log('inside modify exercise');
+            console.log(action.payload.routineExercise.guid)
+            if (action.payload.routineExercise.guid && action.payload.routineExercise.guid != "") {
                 let exerciseIndex = state.schedules[scheduleToChangeIndex]
                     .routines[routineToChangeIndex].exercises.findIndex(e => e.guid === action.payload.routineExercise.guid);
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].exercise = action.payload.routineExercise.exercise;
-                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].reps = action.payload.routineExercise.reps;
-                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].rest = action.payload.routineExercise.rest;
-                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].sets = action.payload.routineExercise.sets;
-                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].weight = action.payload.routineExercise.weight;
-                // console.log('inside modify exercise', exercise);
-                // exercise = { ...action.payload.routineExercise };
-                // console.log('inside modify exercise', exercise);
+                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].setsConfig = action.payload.routineExercise.setsConfig;
+                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].reps = action.payload.routineExercise.reps;
+                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].rest = action.payload.routineExercise.rest;
+                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].sets = action.payload.routineExercise.sets;
+                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].weight = action.payload.routineExercise.weight;
+
             } else {
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises.push({
                     ...action.payload.routineExercise,
@@ -99,9 +98,6 @@ const schedulesReducer = createSlice({
                 });
 
             }
-
-            // console.log('schedule to change: ', scheduleToChange.routines[0].exercises[0].rest);
-            // console.log('inside store schedule to change: ', state.schedules.find(s => s.guid == action.payload.routine.scheduleId).routines[0].exercises[0].rest);
 
             state.currentSchedule = state.schedules[scheduleToChangeIndex];
         },
@@ -126,10 +122,12 @@ const schedulesReducer = createSlice({
                 totalTime: action.payload.totalTime
             });
         },
-        // deleteSchedule: (state) => {
-        //     state.schedules.splice(0, 1);
-        //     state.currentSchedule = state.schedules[0];
-        // }
+        deleteSchedule: (state) => {
+            state.schedules = initialState.schedules;
+            state.currentSchedule = initialState.currentSchedule;
+            // state.schedules.splice(0, 1);
+            // state.currentSchedule = state.schedules[0];
+        }
     },
 });
 
@@ -145,6 +143,6 @@ export const {
     addWorkoutStatistics,
     deleteCurrentSchedule,
     deleteExerciseInRoutine,
-    // deleteSchedule
+    deleteSchedule
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

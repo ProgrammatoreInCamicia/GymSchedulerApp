@@ -10,7 +10,6 @@ import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 import { useEffect } from 'react';
 
 export default function scheduleEdit() {
-
     const { insertMode } = useLocalSearchParams();
 
     const colorScheme = useColorScheme();
@@ -31,8 +30,7 @@ export default function scheduleEdit() {
     }
 
     useEffect(() => {
-        console.log(insertMode);
-        if ((insertMode as any) == true) {
+        if ((insertMode) == 'true') {
             dispatch(resetCurrentSchedule());
         }
     }, [insertMode]);
@@ -42,9 +40,9 @@ export default function scheduleEdit() {
             {/* Use `../` as a simple way to navigate to the root. This is not analogous to "goBack". */}
             {!isPresented && <Link href="../">Dismiss</Link>}
             {/* Native modals have dark backgrounds on iOS, set the status bar to light content. */}
-            {Platform.OS === 'android' && (
+            {/* {Platform.OS === 'android' && (
                 <Text style={[CommonComponentsStyle.title, { color: themeColor.text, backgroundColor: themeColor.secondary + 40 }]}>Modifica scheda</Text>
-            )}
+            )} */}
             <View style={CommonComponentsStyle.container}>
                 <ScheduleForm schedule={currentSchedule} onSubmit={onSubmit} onCancel={onCancel} />
             </View>

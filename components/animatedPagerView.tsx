@@ -6,7 +6,7 @@ import Colors from "../constants/Colors";
 
 
 export default function AnimatedPagerView(
-    { data, content, titleField, addElement = Function, paginationContent, onPageSelected = (page) => { }, page }:
+    { data, content, titleField, addElement = Function, paginationContent, onPageSelected = (page) => { }, page = 0 }:
         {
             data: any[], content: (item: any) => React.JSX.Element, titleField?: string,
             addElement?: () => void,
