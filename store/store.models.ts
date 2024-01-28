@@ -10,33 +10,24 @@ export interface ExerciseStore {
     filter: ExerciseFilter
 }
 
-enum MUSCLES_CATETGORIES {
-    'trapezius',
-    'deltoid',
-    'pectoralis_major',
-    'triceps',
-    'biceps',
-    'abdominal',
-    'serratus_anterior',
-    'latissimus_dorsi',
-    'external_oblique',
-    'brachioradialis',
-    'finger_extensors',
-    'finger_flexors',
-    'quadriceps',
-    'hamstrings',
-    'sartorius',
-    'abductors',
-    'gastrocnemius',
-    'tibialis_anterior',
-    'soleus',
-    'gluteus_medius',
-    'gluteus_maximus',
-    'spine',
-    'cardiovascular_system',
-    'upper_back',
-    'levator_scapulae',
-    'adductors'
+export enum MUSCLES_CATEGORIES {
+    'traps' = 'traps',
+    'triceps' = 'triceps',
+    'biceps' = 'biceps',
+    'abdominals' = 'abdominals',
+    'hamstrings' = 'hamstrings',
+    'calves' = 'calves',
+    'shoulders' = 'shoulders',
+    'adductors' = 'adductors',
+    'glutes' = 'glutes',
+    'quadriceps' = 'quadriceps',
+    'forearms' = 'forearms',
+    'abductors' = 'abductors',
+    'chest' = 'chest',
+    'lower back' = 'lower back',
+    'middle back' = 'middle back',
+    'lats' = 'lats',
+    'neck' = 'neck',
 }
 
 
@@ -55,8 +46,8 @@ export interface Exercise {
     target?: string,
     equipment?: string,
     bodyWeight?: string,
-    primaryMuscles: MUSCLES_CATETGORIES[],
-    secondaryMuscles: MUSCLES_CATETGORIES[],
+    primaryMuscles: MUSCLES_CATEGORIES[],
+    secondaryMuscles: MUSCLES_CATEGORIES[],
 }
 
 export interface Image {

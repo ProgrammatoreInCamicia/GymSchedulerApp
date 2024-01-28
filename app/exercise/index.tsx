@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, useColorScheme, Animated as Animated2, Image, Animated } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, useColorScheme, Animated as Animated2, Image, Animated, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +8,7 @@ import AnimatedPagerView from '../../components/animatedPagerView';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { getExercise } from '../../store/exercises.reducer';
+import { MUSCLES_CATEGORIES } from '../../store/store.models';
 
 export default function ExerciseDetailComponent() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,6 +32,71 @@ export default function ExerciseDetailComponent() {
 
     const details: string[] = ['instructions', 'muscles', 'equipment'];
 
+    const getImageFromMuscle = (muscle: MUSCLES_CATEGORIES) => {
+        let img;// = '';
+        console.log('is lower back,', muscle, MUSCLES_CATEGORIES['lower back'], muscle == MUSCLES_CATEGORIES['lower back'])
+        switch (muscle) {
+            case MUSCLES_CATEGORIES.abdominals:
+                img = require('../../assets/muscles/abs.png')
+                break;
+            case MUSCLES_CATEGORIES.abductors:
+                img = require('../../assets/muscles/abductors.png')
+                break;
+            case MUSCLES_CATEGORIES.adductors:
+                img = require('../../assets/muscles/adductors.png')
+                break;
+            case MUSCLES_CATEGORIES.biceps:
+                img = require('../../assets/muscles/biceps.png')
+                break;
+            case MUSCLES_CATEGORIES.calves:
+                img = require('../../assets/muscles/calfs.png')
+                break;
+            case MUSCLES_CATEGORIES.chest:
+                img = require('../../assets/muscles/chest.png')
+                break;
+            case MUSCLES_CATEGORIES.forearms:
+                img = require('../../assets/muscles/forearms.png')
+                break;
+            case MUSCLES_CATEGORIES.glutes:
+                img = require('../../assets/muscles/gluteus.png')
+                break;
+            case MUSCLES_CATEGORIES.hamstrings:
+                img = require('../../assets/muscles/hamstring.png')
+                break;
+            case MUSCLES_CATEGORIES.lats:
+                img = require('../../assets/muscles/latissimus.png')
+                break;
+            case MUSCLES_CATEGORIES['lower back']:
+                img = require('../../assets/muscles/back_lower.png')
+                break;
+            case MUSCLES_CATEGORIES.neck:
+                img = require('../../assets/muscles/neck.png')
+                break;
+            case MUSCLES_CATEGORIES.quadriceps:
+                img = require('../../assets/muscles/quadriceps.png')
+                break;
+            case MUSCLES_CATEGORIES.shoulders:
+                img = require('../../assets/muscles/shoulders.png')
+                break;
+            case MUSCLES_CATEGORIES.traps:
+                img = require('../../assets/muscles/back_upper.png')
+                break;
+            case MUSCLES_CATEGORIES.triceps:
+                img = require('../../assets/muscles/triceps.png')
+                break;
+            case MUSCLES_CATEGORIES['middle back']:
+                img = require('../../assets/muscles/back_upper.png')
+                break;
+
+            default:
+                break;
+        }
+        // const source = require("../../assets/muscles/" + img);
+        return (
+            <Image style={[{ width: 200, height: 200 }]} source={img} />
+        )
+    }
+
     const detailContent = (detail: string) => {
         return (
             <View style={{ padding: 10 }}>
@@ -43,8 +109,31 @@ export default function ExerciseDetailComponent() {
                         })}
                     </View>
                 )}
-                {detail !== 'instructions' && (
-                    <Text>{detail}</Text>
+                {detail == 'muscles' && (
+                    <ScrollView>
+                        <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>Primary muscles</Text>
+                        {currentExercise?.primaryMuscles.map((primaryMuscle, index) => {
+                            return (
+                                <View style={styles.muscleContainer} key={index}>
+                                    <Text style={[{ color: themeColor.text, textTransform: 'uppercase' }]}>{primaryMuscle}</Text>
+                                    {getImageFromMuscle(primaryMuscle)}
+                                </View>
+                            )
+                        })}
+                        <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>Secondary muscles</Text>
+                        {currentExercise?.secondaryMuscles.map((secondaryMuscle, index) => {
+                            return (
+                                <View style={styles.muscleContainer} key={index}>
+                                    <Text style={[{ color: themeColor.text, textTransform: 'uppercase' }]}>{secondaryMuscle}</Text>
+                                    {getImageFromMuscle(secondaryMuscle)}
+                                </View>
+                            )
+                        })}
+                    </ScrollView>
+
+                )}
+                {detail == 'equipment' && (
+                    <Text>{currentExercise.equipment} ...in progess...</Text>
 
                 )}
 
@@ -119,5 +208,11 @@ const styles = StyleSheet.create({
         // borderRadius: 10,
         width: '100%',
         flex: 1,
+    },
+    muscleContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

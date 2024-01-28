@@ -4,7 +4,7 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 import { Exercise } from '../store/store.models';
 import Colors from '../constants/Colors';
 
-const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item: Exercise, exercisePressed: (id: string) => void, customDescription?: string }) => {
+const ExerciseItem = memo(({ item, exercisePressed, customDescription, showDetailIcon = false, showDetailIconPressed = (id) => { } }: { item: Exercise, exercisePressed: (id: string) => void, customDescription?: string, showDetailIcon?: boolean, showDetailIconPressed?: (id: string) => void }) => {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
 
@@ -36,7 +36,14 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item:
                                     themeColor.text : themeColor.error, marginTop: -10,
                         }} />
                     </View>
-                    <Text ellipsizeMode='tail' numberOfLines={2} style={[styles.textTitle, { color: themeColor.text }]}>{item.name}</Text>
+                    <View style={[styles.titleContainer]}>
+                        <Text ellipsizeMode='tail' numberOfLines={2} style={[styles.textTitle, { color: themeColor.text }]}>{item.name}</Text>
+                        {showDetailIcon == true && (
+                            <TouchableOpacity onPress={() => showDetailIconPressed(item._id)} style={[styles.showDetailIcon, { borderColor: themeColor.white }]}>
+                                <Feather name="eye" size={24} style={[{ color: themeColor.text }]} />
+                            </TouchableOpacity>
+                        )}
+                    </View>
                     {!customDescription && (
                         <View style={styles.targetContainer}>
                             <Feather name="target" size={14} style={{ color: themeColor.text }} />
@@ -55,7 +62,7 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription }: { item:
     )
 })
 
-const ExercisesComponent = ({ exercises, exercisePressed }: { exercises: Exercise[], exercisePressed: (id: string) => void }) => {
+const ExercisesComponent = ({ exercises, exercisePressed, showDetailIcon = false, showDetailIconPressed = (id) => { } }: { exercises: Exercise[], exercisePressed: (id: string) => void, showDetailIcon?: boolean, showDetailIconPressed?: (id: string) => void }) => {
 
     const flatListRef = useRef(null);
 
@@ -77,7 +84,7 @@ const ExercisesComponent = ({ exercises, exercisePressed }: { exercises: Exercis
             renderItem={({ item }) => {
                 return (
                     <View style={{ marginVertical: 10 }}>
-                        <ExerciseItem item={item} exercisePressed={exercisePressed} />
+                        <ExerciseItem item={item} exercisePressed={exercisePressed} showDetailIconPressed={showDetailIconPressed} showDetailIcon={showDetailIcon} />
                     </View>
                 );
             }}
@@ -119,10 +126,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 5
     },
+    titleContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 10
+    },
     textTitle: {
         fontSize: 16,
         textTransform: 'capitalize',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flex: 1
+    },
+    showDetailIcon: {
+        borderRadius: 20,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     text: {
         fontSize: 12,

@@ -117,6 +117,8 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
 
                                             });
                                         }}
+                                        showDetailIcon={true}
+                                        showDetailIconPressed={(id) => router.push({ pathname: '/exercise', params: { id } })}
                                         customDescription={'rest time: ' + item.rest + ' seconds'}
                                     />
                                     <View style={[{ flexDirection: 'row' }]}>
