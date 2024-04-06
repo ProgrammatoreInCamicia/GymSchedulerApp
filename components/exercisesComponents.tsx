@@ -15,7 +15,7 @@ const ExerciseItem = memo(({ item, exercisePressed, customDescription, showDetai
                 backgroundColor: themeColor.secondary + 20,
             }]} onPress={() => exercisePressed(item._id)}>
                 <Image
-                    source={{ uri: `${process.env.EXPO_PUBLIC_API_BASE_URL}/images/${item.images[0]}` }}
+                    source={{ uri: `${process.env.EXPO_PUBLIC_API_BASE_URL}/images/${item?.images[0]}` }}
                     style={[styles.image, { backgroundColor: 'white' }]} />
                 <View style={styles.exerciseMainDataContainer}>
                     <View style={styles.difficultyContainer}>

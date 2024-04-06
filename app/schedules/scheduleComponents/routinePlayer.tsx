@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle"
 import Colors from "../../../constants/Colors";
 import { router, useLocalSearchParams } from "expo-router";
-import { RoutineExercise } from "../../../store/store.models";
+import { HistorycalData, RoutineExercise, SetConfig } from "../../../store/store.models";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from "react";
 import InternalButton from "../../../components/button";
@@ -11,11 +11,12 @@ import Timer from "../../../components/timer";
 import AnimatedPagerView from "../../../components/animatedPagerView";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { AlarmComponent } from "../../../components/alarmComponent";
-import { usePushNotification } from "../../../components/usePushNotifications";
+// import { usePushNotification } from "../../../components/usePushNotifications";
 import { addWorkoutStatistics } from "../../../store/schedules.reducer";
+import Input from "../../../components/Input";
 
 export default function RoutinePlayer() {
-    const { expoPushToken, schedulePushNotification } = usePushNotification();
+    // const { expoPushToken, schedulePushNotification } = usePushNotification();
     const dispatch = useAppDispatch();
     const { playSound, stopSound } = AlarmComponent();
 
@@ -36,10 +37,15 @@ export default function RoutinePlayer() {
     const [currentRoutineExercise, setCurrentRoutineExercise] = useState<RoutineExercise>(null);
 
     const [coutdownFinished, setCoutdownFinished] = useState(false);
+
+    const [routineExercises, setRoutineExercises] = useState<RoutineExercise[]>([]);
+
     // start timer on open
     useEffect(() => {
         setCurrentRoutineExercise(routine.exercises[0]);
         setStartTimer(true);
+        setRoutineExercises(routine.exercises.map(exercise => exercise));
+        console.log('routineExercises', routineExercises)
     }, [routineId]);
 
     const [totalRoutineTime, setTotalRoutineTime] = useState(0);
@@ -154,6 +160,7 @@ export default function RoutinePlayer() {
                 routine: routine,
                 totalTime: totalRoutineTime
             }))
+            console.log('added historical data:', routineExercises[0].setsConfig[0].historicalData);
             router.push('statistics');
         } else {
             onPageSelected(currentPage + 1);
@@ -197,8 +204,133 @@ export default function RoutinePlayer() {
         setCurrentRoutineExercise(routine.exercises[page]);
     }
 
+    const setWeight = (routineExercise: RoutineExercise, setConfigIndex: number, weight: number) => {
+        setRoutineExercises(prevRoutineExercises => {
+            const updatedExercises = [...prevRoutineExercises];
+            const indexOfExercise = updatedExercises.findIndex(ex => ex.guid === routineExercise.guid);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (!updatedExercises[indexOfExercise].setsConfig[setConfigIndex].historicalData) {
+                updatedExercises[indexOfExercise] = {
+                    ...updatedExercises[indexOfExercise],
+                    setsConfig: updatedExercises[indexOfExercise].setsConfig.map((setConfig, index) => {
+                        if (index === setConfigIndex) {
+                            return {
+                                ...setConfig,
+                                historicalData: []
+                            }
+                        }
+                        return setConfig
+                    })
+                }
+            }
+
+            const indexOfHistoricalDataToChange = updatedExercises[indexOfExercise].setsConfig[setConfigIndex].historicalData.findIndex(historicalData => historicalData.data.getTime() === today.getTime());
+
+            if (indexOfHistoricalDataToChange >= 0) {
+                updatedExercises[indexOfExercise] = {
+                    ...updatedExercises[indexOfExercise],
+                    setsConfig: updatedExercises[indexOfExercise].setsConfig.map((setConfig, index) => {
+                        if (index === setConfigIndex) {
+                            return {
+                                ...setConfig,
+                                historicalData: setConfig.historicalData.map((historicalData, i) => {
+                                    if (i === indexOfHistoricalDataToChange) {
+                                        return {
+                                            ...historicalData,
+                                            setConfig: {
+                                                reps: historicalData.setConfig.reps,
+                                                weight
+                                            }
+                                        }
+                                    }
+                                    return historicalData
+                                })
+                            }
+                        }
+                        return setConfig
+                    })
+                }
+            } else {
+                // add a new element
+
+                updatedExercises[indexOfExercise] = {
+                    ...updatedExercises[indexOfExercise],
+                    setsConfig: updatedExercises[indexOfExercise].setsConfig.map((setConfig, index) => {
+                        if (index === setConfigIndex) {
+                            return {
+                                ...setConfig,
+                                historicalData: [
+                                    ...setConfig.historicalData,
+                                    {
+                                        data: today,
+                                        setConfig: {
+                                            weight,
+                                            reps: 0
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                        return setConfig
+                    })
+                }
+            }
+
+            return updatedExercises
+        })
+    }
+
+    const setReps = (routineExercise: RoutineExercise, setConfigIndex: number, reps: number) => {
+        const updatedExercises = [...routineExercises];
+        const indexOfExercise = updatedExercises.findIndex(ex => ex.guid === routineExercise.guid);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const indexOfHistoricalDataToChange = updatedExercises[indexOfExercise].setsConfig[setConfigIndex].historicalData.findIndex(historicalData => historicalData.data.getTime() === today.getTime());
+        if (indexOfHistoricalDataToChange >= 0) {
+            // change the current historical data
+            updatedExercises[indexOfExercise].setsConfig[setConfigIndex].historicalData[indexOfHistoricalDataToChange].setConfig.reps = reps;
+        } else {
+            // add a new element
+            updatedExercises[indexOfExercise].setsConfig[setConfigIndex].historicalData.push({
+                data: today,
+                setConfig: {
+                    reps,
+                    weight: updatedExercises[indexOfExercise].setsConfig[setConfigIndex].weight
+                }
+            });
+        }
+        setRoutineExercises(updatedExercises);
+    }
+
+    const getWeightValue = (currentExercise: RoutineExercise, currentSetConfigIndex: number, currentSetConfig: SetConfig): string => {
+        if (routineExercises.length > 0) {
+
+            let value = currentExercise.setsConfig[currentSetConfigIndex].weight + '';
+
+            const historicalData = routineExercises.find(re => re.guid == currentExercise.guid)
+                .setsConfig.find(sc => sc.guid == currentSetConfig.guid)
+                .historicalData;
+            if (historicalData.length > 0) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const findedHistoricalData = historicalData.find(hd => hd.data.getTime() == today.getTime())
+                if (findedHistoricalData) {
+                    value = findedHistoricalData.setConfig.weight + '';
+                } else {
+                    value = historicalData[historicalData.length - 1].setConfig.weight + '';
+                }
+            }
+            return value;
+        } else {
+            return '0';
+        }
+    }
+
     const pagerContent = (exercise: RoutineExercise) => {
         let generalIndexCount = 0;
+
         return (
             <View style={{ flex: 1 }}>
                 <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>{exercise.exercise.name}</Text>
@@ -229,11 +361,14 @@ export default function RoutinePlayer() {
                                     </View>
                                     <View style={[styles.setValueContainer]}>
                                         <View style={[
-                                            styles.setCounter,
-                                            styles.setValue,
-                                            { backgroundColor: themeColor.background }
+                                            { flex: 1 }
                                         ]}>
-                                            <Text style={{ color: themeColor.text, fontWeight: '500' }}>{setConfig.weight}</Text>
+                                            <Input
+                                                inputMode="decimal"
+                                                value={getWeightValue(exercise, setConfigIndex, setConfig)}
+                                                onValueChange={(value) => setWeight(exercise, setConfigIndex, +value)}
+                                                backgroundColor={themeColor.background}
+                                                inputStyle={{ fontSize: 14, color: themeColor.text, fontWeight: '500' }} />
                                         </View>
                                         <Text style={{ color: themeColor.text }}>Kg</Text>
                                     </View>
@@ -362,5 +497,5 @@ const styles = StyleSheet.create({
         top: '45%',
         zIndex: -1,
         left: 0
-    }
+    },
 })

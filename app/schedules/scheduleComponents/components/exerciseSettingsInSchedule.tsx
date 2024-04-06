@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import InternalModal from "../../../../components/modal";
-import { StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import Colors from "../../../../constants/Colors";
 import CommonComponentsStyle from "../../../../constants/CommonComponentsStyle";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -81,7 +81,8 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                         reps: +s.reps,
                         sets: +s.sets,
                         weight: +s.weight,
-                        guid: s.guid
+                        guid: s.guid,
+                        historicalData: []
                     }
                 }),
                 rest: +time,
@@ -132,8 +133,8 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.centeredView}>
-                    <View style={[]}>
+                <View style={[styles.centeredView]}>
+                    <ScrollView style={[{}]}>
                         <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>
                             {exercise?.name}
                         </Text>
@@ -244,7 +245,7 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                                 setNote(note);
                             }}
                         />
-                    </View>
+                    </ScrollView>
                 </View>
             </Animated.View>
         )
@@ -287,6 +288,7 @@ const styles = StyleSheet.create({
     },
     centeredView: {
         flex: 1,
+        marginBottom: 50
     },
     setsContainer: {
         width: '100%',

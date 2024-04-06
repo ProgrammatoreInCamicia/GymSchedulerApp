@@ -90,17 +90,25 @@ export interface Routine {
 
 export interface RoutineExercise {
     guid?: string;
-    setsConfig: {
-        guid: string;
-        sets: number;
-        reps: number;
-        weight: number;
-    }[],
-    // sets: number;
-    // reps: number;
+    setsConfig: SetConfig[],
     exercise: Exercise;
     rest: number;
-    // weight: number;
+}
+
+export interface SetConfig {
+    guid: string;
+    sets: number;
+    reps: number;
+    weight: number;
+    historicalData?: HistorycalData[];
+}
+
+export interface HistorycalData {
+    data: Date,
+    setConfig: {
+        reps: number;
+        weight: number;
+    },
 }
 
 export interface Statistic {
