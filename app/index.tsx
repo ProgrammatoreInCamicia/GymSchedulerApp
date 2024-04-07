@@ -3,20 +3,18 @@ import Colors from '../constants/Colors';
 import SearchBar from '../components/searchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
-import { deleteCurrentExercise, searchExercises, searchTermChange } from '../store/exercises.reducer';
+import { searchExercises, searchTermChange } from '../store/exercises.reducer';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ExercisesComponent } from '../components/exercisesComponents';
 import { StatusBar } from 'expo-status-bar';
 import CommonComponentsStyle from '../constants/CommonComponentsStyle';
 import { router } from 'expo-router';
-import { deleteSchedule } from '../store/schedules.reducer';
 
 export default function Page() {
   const colorScheme = useColorScheme();
 
   const exercises = useAppSelector((state) => state.exercises.exercises);
 
-  const counter = useAppSelector((state) => state.counter);
   const term = useAppSelector((state) => state.exercises.filter.searchTerm);
   const dispatch = useAppDispatch();
 

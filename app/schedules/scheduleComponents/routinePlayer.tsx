@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle"
 import Colors from "../../../constants/Colors";
 import { router, useLocalSearchParams } from "expo-router";
-import { HistorycalData, RoutineExercise, SetConfig } from "../../../store/store.models";
+import { RoutineExercise, SetConfig } from "../../../store/store.models";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from "react";
 import InternalButton from "../../../components/button";
@@ -11,11 +11,10 @@ import Timer from "../../../components/timer";
 import AnimatedPagerView from "../../../components/animatedPagerView";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { AlarmComponent } from "../../../components/alarmComponent";
-// import { usePushNotification } from "../../../components/usePushNotifications";
 import { addWorkoutStatistics } from "../../../store/schedules.reducer";
 import Input from "../../../components/Input";
 
-export default function RoutinePlayer() {
+export default function RoutinePlayer3() {
     // const { expoPushToken, schedulePushNotification } = usePushNotification();
     const dispatch = useAppDispatch();
     const { playSound, stopSound } = AlarmComponent();

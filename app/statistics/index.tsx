@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, useColorScheme, Animated as Animated2 } from 'react-native';
+import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 import { StatusBar } from 'expo-status-bar';

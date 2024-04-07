@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, useColorScheme } from "react-native";
 import Input from "./Input";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import { setCurrentScheduleEndDate, setCurrentScheduleStartDate, setCurrentScheduleTitle } from "../store/schedules.reducer";
 import Colors from "../constants/Colors";
 import InternalDatepicker from "./datePicker";
@@ -45,25 +45,25 @@ const ScheduleForm = (
 
                 <Input
                     value={title}
-                    placeholder={'Inserisci nome scheda'}
+                    placeholder={'Type schedule name'}
                     onValueChange={onTitleChange}
                     onValueSubmit={onValueSubmit}
-                    label="Nome scheda"
+                    label="Schedule name"
                 />
 
                 <View style={styles.datesContainer}>
-                    <InternalDatepicker value={schedule.startDate} label="Dal" onValueChange={onStartDateChange} />
-                    <InternalDatepicker value={schedule.endDate} label="Al" onValueChange={onEndDateChange} />
+                    <InternalDatepicker value={schedule.startDate} label="From" onValueChange={onStartDateChange} />
+                    <InternalDatepicker value={schedule.endDate} label="To" onValueChange={onEndDateChange} />
                 </View>
             </View>
 
 
             <View style={styles.formFooter}>
                 <View style={{ flex: 1 }}>
-                    <InternalButton label='Annulla' cancelButton={true} onPress={() => onCancel()} />
+                    <InternalButton label='Cancel' cancelButton={true} onPress={() => onCancel()} />
                 </View>
                 <View style={{ flex: 1 }}>
-                    <InternalButton label='Avanti' onPress={() => onSubmit()} />
+                    <InternalButton label='Next' onPress={() => onSubmit()} />
                 </View>
             </View>
 

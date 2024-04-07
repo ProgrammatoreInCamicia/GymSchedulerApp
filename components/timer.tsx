@@ -14,6 +14,7 @@ const Timer = forwardRef(({ start, stop, pause, startFrom = 0, isCountdown = fal
     }));
 
     const startTimer = () => {
+        console.log('start timer');
         setStatus(1);
     }
 
@@ -52,6 +53,7 @@ const Timer = forwardRef(({ start, stop, pause, startFrom = 0, isCountdown = fal
         if (status === 1) {
             timerID = setInterval(() => {
                 if (isCountdown) {
+                    console.log('start countdown : ', time)
                     setTime((time) => {
                         if (time == 0) {
                             stopTimer();

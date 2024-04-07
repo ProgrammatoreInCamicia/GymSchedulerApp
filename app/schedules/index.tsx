@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, useColorScheme, Animated as Animated2 } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -54,7 +54,7 @@ export default function Page() {
           ]}
             onPress={() => setShowModal(false)}
           >
-            <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Annulla</Text>
+            <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[
             CommonComponentsStyle.button,
@@ -64,7 +64,7 @@ export default function Page() {
           ]}
             onPress={() => newRoutine()}
           >
-            <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Conferma</Text>
+            <Text style={[CommonComponentsStyle.buttonText, { color: themeColor.text }]}>Confirm</Text>
           </TouchableOpacity>
           {/* <InternalButton label='Conferma' onPress={() => newRoutine} /> */}
 
@@ -107,7 +107,7 @@ export default function Page() {
           setShowScheduleMenuShowModal(false);
         }}>
           <Entypo name="edit" size={18} color="white" />
-          <Text style={[styles.itemText, { color: themeColor.text }]}>Modifica</Text>
+          <Text style={[styles.itemText, { color: themeColor.text }]}>Modify</Text>
         </TouchableOpacity>
         <TouchableOpacity disabled={schedules.length === 1}
           style={[
@@ -121,7 +121,7 @@ export default function Page() {
           }}>
           {/* <Entypo name="edit" size={18} color="white" /> */}
           <AntDesign name="delete" size={18} color="white" />
-          <Text style={[styles.itemText, { color: themeColor.text }]}>Elimina</Text>
+          <Text style={[styles.itemText, { color: themeColor.text }]}>Delete</Text>
         </TouchableOpacity>
       </Animated.View>
     );

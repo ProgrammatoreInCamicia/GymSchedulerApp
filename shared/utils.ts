@@ -1,3 +1,5 @@
+import { SetConfig } from "../store/store.models";
+
 export function formatDate(d: Date, mode: 'date' | 'time' = 'date') {
     d = new Date(d);
     if (mode == 'date') {
@@ -17,4 +19,23 @@ export function formatDate(d: Date, mode: 'date' | 'time' = 'date') {
 
         return [hour, minutes].join(':');
     }
+}
+
+export function getGroupedSetsConfig(setsConfig: SetConfig[]) {
+    const groupedData = setsConfig.reduce((acc, cur) => {
+        const { guid, reps, weight } = cur;
+        const existingItem = acc.find(item =>
+            item.guid === guid && item.reps == reps && item.weight == weight
+        );
+
+        if (existingItem) {
+            existingItem.sets += 1;
+        } else {
+            acc.push({ guid, reps: reps.toString(), weight: weight.toString(), sets: 1 });
+        }
+
+        return acc;
+    }, []);
+
+    return groupedData;
 }

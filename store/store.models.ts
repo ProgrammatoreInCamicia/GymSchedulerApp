@@ -95,20 +95,19 @@ export interface RoutineExercise {
     rest: number;
 }
 
-export interface SetConfig {
+export interface SetConfig extends Set {
     guid: string;
-    sets: number;
-    reps: number;
-    weight: number;
     historicalData?: HistorycalData[];
 }
 
 export interface HistorycalData {
     data: Date,
-    setConfig: {
-        reps: number;
-        weight: number;
-    },
+    sets: Set;
+}
+
+export interface Set {
+    reps: number;
+    weight: number;
 }
 
 export interface Statistic {

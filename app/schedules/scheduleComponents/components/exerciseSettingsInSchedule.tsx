@@ -8,6 +8,8 @@ import { AntDesign, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { deleteExerciseInRoutine, guidGenerator, saveExerciseInRoutine } from "../../../../store/schedules.reducer";
 import Input from "../../../../components/Input";
+import { SetConfig } from "../../../../store/store.models";
+import { getGroupedSetsConfig } from "../../../../shared/utils";
 
 export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSetShowExerciseModal, routineExerciseGuid = null }: { exerciseId: string, routineId: string, onSetShowExerciseModal: () => any, routineExerciseGuid?: string }) {
     const colorScheme = useColorScheme();
@@ -72,25 +74,29 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
     }
 
     const saveExercise = () => {
+        console.log(setsConfig);
         dispatch(saveExerciseInRoutine({
             routine,
             routineExercise: {
                 exercise: exercise,
                 setsConfig: setsConfig.map(s => {
-                    return {
-                        reps: +s.reps,
-                        sets: +s.sets,
-                        weight: +s.weight,
-                        guid: s.guid,
-                        historicalData: []
+                    let setConfigArray: SetConfig[] = [];
+                    for (let index = 0; index < +s.sets; index++) {
+                        let setConfig: SetConfig = {
+                            reps: +s.reps,
+                            weight: +s.weight,
+                            guid: s.guid,
+                            historicalData: []
+                        };
+                        setConfigArray.push(setConfig);
                     }
-                }),
+
+                    return setConfigArray;
+                }).flat(),
                 rest: +time,
                 guid: routineExerciseGuid
             }
         }));
-        // onSetShowExerciseModal();
-        // resetExerciseData();
     }
 
     const exercisesSettingsModalContent = () => {
@@ -120,7 +126,7 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                             }]} onPress={() =>
                                 deleteExercise()
                             }>
-                                <Text style={[{ color: themeColor.text }]}>Elimina</Text>
+                                <Text style={[{ color: themeColor.text }]}>Delete</Text>
                             </TouchableOpacity>
                         )}
                         <TouchableOpacity style={[{
@@ -129,7 +135,7 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                             paddingVertical: 5,
                             borderRadius: 5
                         }]} onPress={() => saveExercise()}>
-                            <Text style={[{ color: themeColor.text }]}>Fatto</Text>
+                            <Text style={[{ color: themeColor.text }]}>Done</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -254,14 +260,20 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
     useEffect(() => {
         if (routineExerciseGuid) {
             const currentRoutineExercise = routine.exercises.find(ex => ex.guid === routineExerciseGuid);
-            setSetsConfig(currentRoutineExercise.setsConfig.map((setConfig) => {
-                return {
-                    guid: setConfig.guid,
-                    reps: setConfig.reps.toString(),
-                    sets: setConfig.sets.toString(),
-                    weight: setConfig.weight.toString()
-                }
-            }));
+            console.log(currentRoutineExercise);
+            settime(currentRoutineExercise.rest + '');
+            const groupedData = getGroupedSetsConfig(currentRoutineExercise.setsConfig)
+            console.log(groupedData);
+            groupedData.forEach(gd => gd.sets = gd.sets.toString());
+            setSetsConfig(groupedData);
+            // setSetsConfig(currentRoutineExercise.setsConfig.map((setConfig) => {
+            //     return {
+            //         guid: setConfig.guid,
+            //         reps: setConfig.reps.toString(),
+            //         sets: setConfig.sets.toString(),
+            //         weight: setConfig.weight.toString()
+            //     }
+            // }));
         }
     }, [routineExerciseGuid])
 

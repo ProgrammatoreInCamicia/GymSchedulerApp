@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 15,
-        // marginVertical: 10,
         gap: 20,
     },
     image: {
@@ -113,13 +112,10 @@ const styles = StyleSheet.create({
         height: 75,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        // backgroundColor: 'red'
     },
     difficultyContainer: {
         flexDirection: 'row',
         gap: 5,
-        // height: 15
-        // backgroundColor: 'yellow'
     },
     targetContainer: {
         marginTop: 5,

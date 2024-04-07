@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Animated, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native"
 import PagerView from "react-native-pager-view";
 import Colors from "../constants/Colors";
@@ -71,7 +71,7 @@ export default function AnimatedPagerView(
                 style={styles.pagerView}
                 initialPage={page}
                 onPageScroll={(e) => {
-                    // Imposto le due variabili di animazione in base ai parametri del PagerView
+                    // Set animation variables based on PagerView parameters
                     scrollOffsetAnimatedValue.setValue(e.nativeEvent.offset);
                     positionAnimatedValue.setValue(e.nativeEvent.position);
                 }}
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 5,
         paddingVertical: 10,
-        // backgroundColor: 'red'
     },
     center: {
         justifyContent: 'center',
@@ -112,9 +111,9 @@ const styles = StyleSheet.create({
         padding: 10,
         borderTopLeftRadius: 15,
         borderBottomLeftRadius: 15,
-        shadowOpacity: 0.2, // Adjust the opacity as needed
+        shadowOpacity: 0.2,
         shadowOffset: { width: 0, height: 7 },
-        shadowRadius: 5, // Adjust the radius as needed
+        shadowRadius: 5,
         elevation: 10,
     }
 })

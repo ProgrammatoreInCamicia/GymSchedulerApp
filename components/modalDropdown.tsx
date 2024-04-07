@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { FlatList, I18nManager, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, useColorScheme } from "react-native";
+import { FlatList, I18nManager, StyleSheet, Text, TouchableOpacity, useColorScheme } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from "../constants/Colors";
 import { AntDesign } from '@expo/vector-icons';
 
-import Animated, { Easing, useAnimatedStyle, withTiming, useSharedValue, FadeInUp, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import InternalModal from "./modal";
 import CommonComponentsStyle from "../constants/CommonComponentsStyle";
 
@@ -41,7 +41,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
 
                 }}>
                     <AntDesign name="pluscircle" size={18} color="white" />
-                    <Text style={styles.itemText}>Aggiungi</Text>
+                    <Text style={styles.itemText}>Add</Text>
                 </TouchableOpacity>
             </Animated.View>
         );
@@ -50,7 +50,7 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
     const addElement = () => {
         setShowModal(false);
         setTimeout(() => {
-            // necessario per far comparire diverse modali su IOS
+            // necessary to add different modals in IOS
             onAddElement();
         }, 1);
     }
@@ -69,31 +69,6 @@ export default function ModalDropdown({ value, keyField, labelField, label, data
                 removeModal={() => setShowModal(false)}
                 content={modalContent}
             />
-            {/* <Modal animationType="none" transparent={true} visible={showModal}>
-                <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-                    <View style={[
-                        styles.modalContainer,
-                        { backgroundColor: themeColor.black + 90 }
-                    ]}>
-                        <Animated.View style={[styles.modalContentContainer,
-                        { backgroundColor: themeColor.background }]} entering={FadeInDown}>
-                            <FlatList
-                                data={data}
-                                renderItem={renderItem}
-                                keyExtractor={(item, index) => index.toString()}
-                                style={styles.flatListStyle}
-                            />
-                            <TouchableOpacity style={[styles.item, { backgroundColor: themeColor.success }]} onPress={() => {
-                                addElement()
-
-                            }}>
-                                <AntDesign name="pluscircle" size={18} color="white" />
-                                <Text style={styles.itemText}>Aggiungi</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal> */}
         </TouchableOpacity>
     )
 }

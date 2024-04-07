@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import { Routine, RoutineExercise } from "../../../store/store.models";
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle";
 import Colors from "../../../constants/Colors";
@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import ExerciseSettingsInSchedule from "./components/exerciseSettingsInSchedule";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
 import { setExercisesInRoutine } from "../../../store/schedules.reducer";
+import { getGroupedSetsConfig } from "../../../shared/utils";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
     const colorScheme = useColorScheme();
@@ -83,7 +84,6 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
     return (
         <View style={[{ flex: 1 }]}>
             {/* Start Routine Exercises */}
-            {/* <ScrollView style={[{ flex: 1 }]}> */}
             {routine.exercises.length == 0 && (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Image style={{ width: 200, height: 200 }} source={require('../../../assets/4.png')} />
@@ -125,13 +125,13 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                                         <View style={[styles.setsContainerPreview]}>
                                             <Text style={[{ color: themeColor.text }]}>Sets: </Text>
                                             <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                                                {item.setsConfig.map(s => s.sets).join(' - ')}
+                                                {getGroupedSetsConfig(item.setsConfig).map(s => s.sets).join(' - ')}
                                             </Text>
                                         </View>
                                         <View style={[styles.setsContainerPreview]}>
                                             <Text style={[{ color: themeColor.text }]}>Reps: </Text>
                                             <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                                                {item.setsConfig.map(s => s.reps).join(' - ')}
+                                                {getGroupedSetsConfig(item.setsConfig).map(s => s.reps).join(' - ')}
                                             </Text>
                                         </View>
                                     </View>
@@ -141,40 +141,6 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
 
                     )}
                 />
-                // routine.exercises.map((routineExercise) => (
-                //     <View key={routineExercise.guid} style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
-                //         <ExerciseItem
-                //             item={routineExercise.exercise}
-                //             key={routineExercise.guid}
-                //             exercisePressed={() => {
-                //                 // setShowModal(true);
-                //                 setTimeout(() => {
-                //                     changeSelectedExercise(routineExercise.exercise._id, routineExercise.guid);
-                //                     // setSets(routineExercise.sets.toString());
-                //                     // setreps(routineExercise.reps.toString());
-                //                     // settime(routineExercise.rest.toString());
-                //                     // setCurrentExerciseGuid(routineExercise.guid);
-
-                //                 });
-                //             }}
-                //             customDescription={'rest time: ' + routineExercise.rest + ' seconds'}
-                //         />
-                //         <View style={[{ flexDirection: 'row' }]}>
-                //             <View style={[styles.setsContainerPreview]}>
-                //                 <Text style={[{ color: themeColor.text }]}>Sets: </Text>
-                //                 <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                //                     {routineExercise.setsConfig.map(s => s.sets).join(' - ')}
-                //                 </Text>
-                //             </View>
-                //             <View style={[styles.setsContainerPreview]}>
-                //                 <Text style={[{ color: themeColor.text }]}>Reps: </Text>
-                //                 <Text style={[{ color: themeColor.text, fontWeight: "bold" }]}>
-                //                     {routineExercise.setsConfig.map(s => s.reps).join(' - ')}
-                //                 </Text>
-                //             </View>
-                //         </View>
-                //     </View>
-                // ))
             )}
             <View style={{ height: 60 }}></View>
 
@@ -194,7 +160,6 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 />
             )}
 
-            {/* </ScrollView> */}
             {/* End Routine Exercises */}
 
             {/* Start Routine control menu */}
@@ -211,7 +176,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push({ pathname: '/schedules/scheduleComponents/routinePlayer', params: { routineId: routine.guid } })
+                        router.push({ pathname: '/schedules/scheduleComponents/newRoutinePlayer', params: { routineId: routine.guid } })
                     }}
                     disabled={routine.exercises.length == 0}
                     style={[styles.iconButton, { opacity: routine.exercises.length > 0 ? 1 : .4 }]}>

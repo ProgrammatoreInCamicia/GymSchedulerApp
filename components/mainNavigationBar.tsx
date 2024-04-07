@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { Feather, AntDesign, Foundation } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import { usePathname, useRouter, useSegments } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 
 const MainNavigationBar = () => {
     const colorScheme = useColorScheme();
@@ -33,13 +33,13 @@ const MainNavigationBar = () => {
                     color={path == '/statistics' ? themeColor.white : themeColor.background}
                 />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconContainer, path == '/home' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/home')}>
+            {/* <TouchableOpacity style={[styles.iconContainer, path == '/home' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/home')}>
                 <AntDesign
                     name="setting"
                     style={[styles.iconStyle, { fontSize: path == '/home' ? 30 : 25 }]}
                     color={path == '/home' ? themeColor.white : themeColor.background}
                 />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={[styles.backgroundStyle, styles.fakeContainer, { backgroundColor: themeColor.white }]}>
             </View>
         </View>

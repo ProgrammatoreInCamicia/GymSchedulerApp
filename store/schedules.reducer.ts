@@ -89,17 +89,12 @@ const schedulesReducer = createSlice({
                 .findIndex(s => s.guid == action.payload.routine.scheduleId)
             let routineToChangeIndex = state.schedules[scheduleToChangeIndex]
                 .routines.findIndex(r => r.guid == action.payload.routine.guid);
-            console.log(action.payload.routineExercise.guid)
             if (action.payload.routineExercise.guid && action.payload.routineExercise.guid != "") {
                 let exerciseIndex = state.schedules[scheduleToChangeIndex]
                     .routines[routineToChangeIndex].exercises.findIndex(e => e.guid === action.payload.routineExercise.guid);
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].exercise = action.payload.routineExercise.exercise;
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].setsConfig = action.payload.routineExercise.setsConfig;
-                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].reps = action.payload.routineExercise.reps;
-                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].rest = action.payload.routineExercise.rest;
-                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].sets = action.payload.routineExercise.sets;
-                // state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].weight = action.payload.routineExercise.weight;
-
+                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].rest = action.payload.routineExercise.rest;
             } else {
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises.push({
                     ...action.payload.routineExercise,
@@ -134,8 +129,6 @@ const schedulesReducer = createSlice({
         deleteSchedule: (state) => {
             state.schedules = initialState.schedules;
             state.currentSchedule = initialState.currentSchedule;
-            // state.schedules.splice(0, 1);
-            // state.currentSchedule = state.schedules[0];
         }
     },
 });

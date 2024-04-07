@@ -1,6 +1,6 @@
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Text, View, useColorScheme } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import ScheduleForm from '../../components/ScheduleForm';
 import { SafeAreaView } from 'react-native-safe-area-context';

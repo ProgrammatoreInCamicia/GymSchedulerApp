@@ -55,8 +55,8 @@ const InternalDatepicker = ({
 
             {show && Platform.OS === 'ios' && (
                 <View style={styles.iosView}>
-                    <InternalButton label='Annulla' cancelButton={true} onPress={() => toggleDatepicker()} />
-                    <InternalButton label='Conferma' onPress={() => confirmIOSData()} />
+                    <InternalButton label='Cancel' cancelButton={true} onPress={() => toggleDatepicker()} />
+                    <InternalButton label='Confirm' onPress={() => confirmIOSData()} />
                 </View>
             )}
 

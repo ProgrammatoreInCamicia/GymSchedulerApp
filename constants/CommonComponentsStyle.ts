@@ -9,7 +9,6 @@ export default StyleSheet.create({
         marginTop: 10,
         marginBottom: 15,
         paddingHorizontal: 20,
-        // flex: 1
     },
     buttonText: {
         fontSize: 14,

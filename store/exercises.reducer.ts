@@ -1,11 +1,6 @@
-import { PayloadAction, createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Exercise, ExerciseStore } from "./store.models";
 import expressService from "../app/api/expressService";
-
-// type InitialState = {
-//     exercises: Exercise[],
-//     loading: boolean,
-// }
 
 const initialState: ExerciseStore = {
     exercises: [],
@@ -104,13 +99,6 @@ const exercisesReducer = createSlice({
 
     }
 });
-
-// export const {
-//     selectAll: selectExercises,
-//     selectById: selectExerciseById,
-// } = exercisesAdapter.getSelectors((state) => state)
-
-
 
 export const { init, searchTermChange, deleteCurrentExercise } = exercisesReducer.actions
 export default exercisesReducer.reducer;
