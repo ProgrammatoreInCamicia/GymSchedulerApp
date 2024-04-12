@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Routine, RoutineExercise, Schedule, ScheduleStore } from "./store.models";
+import { HistorycalData, Routine, RoutineExercise, Schedule, ScheduleStore } from "./store.models";
 
 const initialCurrentScheduleState: Schedule = {
     _id: null,
@@ -129,6 +129,22 @@ const schedulesReducer = createSlice({
         deleteSchedule: (state) => {
             state.schedules = initialState.schedules;
             state.currentSchedule = initialState.currentSchedule;
+        },
+        addHistoricalData: (state, action: PayloadAction<{ routine: Routine, exerciseIndex: number, setIndex: number, historycalData: HistorycalData }>) => {
+            let scheduleToChangeIndex = state.schedules
+                .findIndex(s => s.guid == action.payload.routine.scheduleId)
+            let routineToChangeIndex = state.schedules[scheduleToChangeIndex]
+                .routines.findIndex(r => r.guid == action.payload.routine.guid);
+            state.schedules[scheduleToChangeIndex]
+                .routines[routineToChangeIndex]
+                .exercises[action.payload.exerciseIndex]
+                .setsConfig[action.payload.setIndex]
+                .historicalData.push({
+                    ...action.payload.historycalData,
+                    data: new Date(),
+                });
+
+            state.currentSchedule = state.schedules[scheduleToChangeIndex];
         }
     },
 });
@@ -147,5 +163,6 @@ export const {
     deleteExerciseInRoutine,
     deleteSchedule,
     setExercisesInRoutine,
+    addHistoricalData,
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

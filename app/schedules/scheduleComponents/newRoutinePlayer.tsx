@@ -3,12 +3,14 @@ import Colors from "../../../constants/Colors";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CommonComponentsStyle from "../../../constants/CommonComponentsStyle";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import InternalButton from "../../../components/button";
 import { useEffect, useRef, useState } from "react";
 import Input from "../../../components/Input";
 import { HistorycalData, RoutineExercise } from "../../../store/store.models";
 import Timer from "../../../components/timer";
+import { addHistoricalData, addWorkoutStatistics } from "../../../store/schedules.reducer";
+import { AlarmComponent } from "../../../components/alarmComponent";
 
 const RoutinePlayer = () => {
     const colorScheme = useColorScheme();
@@ -26,26 +28,68 @@ const RoutinePlayer = () => {
     }, [routine]);
 
     const setCurrentExercise = (index: number) => {
+        if (index > routine.exercises.length - 1) {
+            dispatch(addWorkoutStatistics({
+                routine: routine,
+                totalTime: totalRoutineTime
+            }));
 
-        // historicalData changes to local historical data
-        if (historicalData.length) {
-            setLocalHistoricalData(archivedHistoricalData => {
-                const changed = [...archivedHistoricalData]
-                if (changed[currentExerciseIndex]) {
-                    // change historical data
-                    changed[currentExerciseIndex] = historicalData;
-                } else {
-                    // add historical data to archive
-                    changed.push(historicalData);
-                }
-                return [...changed];
+            // Save history data
+            // routine.exercises.forEach((exercise, exerciseIndex) => {
+            //     let changedExercise = { ...exercise };
+            //     if (exerciseIndex < routine.exercises.length - 1) {
+            //         changedExercise.setsConfig.forEach((setConfig, setConfigIndex) => {
+            //             setConfig.historicalData.push(localHistoricalData[exerciseIndex][setConfigIndex]);
+            //         });
+            //     } else {
+            //         changedExercise.setsConfig.forEach((setConfig, setConfigIndex) => {
+            //             setConfig.historicalData.push(historicalData[setConfigIndex]);
+            //         });
+            //     }
+            // });
+            localHistoricalData.forEach((historicalData, exerciseIndex) => {
+                historicalData.forEach((historycalData, setIndex) => {
+                    dispatch(addHistoricalData({
+                        exerciseIndex,
+                        setIndex,
+                        historycalData,
+                        routine
+                    }));
+                })
             });
-        }
 
-        setCurrentExerciseIndex(index);
-        setCurrentSetIndex(0);
-        setHistoricalDataOfCurrentRoutineExercise(index);
-        resetTimer();
+            historicalData.forEach((hd, setIndex) => {
+                dispatch(addHistoricalData({
+                    exerciseIndex: routine.exercises.length - 1,
+                    setIndex,
+                    historycalData: hd,
+                    routine
+                }));
+            });
+
+            router.push('schedules');
+        } else {
+            // historicalData changes to local historical data
+            if (historicalData.length) {
+                setLocalHistoricalData(archivedHistoricalData => {
+                    const changed = [...archivedHistoricalData]
+                    if (changed[currentExerciseIndex]) {
+                        // change historical data
+                        changed[currentExerciseIndex] = historicalData;
+                    } else {
+                        // add historical data to archive
+                        changed.push(historicalData);
+                    }
+                    return [...changed];
+                });
+            }
+
+            setCurrentExerciseIndex(index);
+            setCurrentSetIndex(0);
+            setHistoricalDataOfCurrentRoutineExercise(index);
+            resetTimer();
+
+        }
     }
 
     const setHistoricalDataOfCurrentRoutineExercise = (index: number) => {
@@ -124,7 +168,6 @@ const RoutinePlayer = () => {
 
         // Check if current set is not the last inside current exercise
         if (currentSetIndex < currentExerciseSetCount - 1) {
-            console.log('it is not the last set - go to next set')
             if (exerciseRest > 0) {
                 // start rest timer
                 setIsCountdown(true);
@@ -137,7 +180,6 @@ const RoutinePlayer = () => {
                 goToNextSet();
             }
         } else {
-            console.log('it is the last set');
             // go to next exercise
             setCurrentExercise(currentExerciseIndex + 1);
         }
@@ -150,7 +192,10 @@ const RoutinePlayer = () => {
     }
 
     const stopSoundAndGoNext = () => {
-        console.log(currentExerciseIndex, currentSetIndex, historicalData);
+        stopSound();
+        setCoutdownFinished(false);
+
+        goNext();
     }
 
     // Start timer
@@ -168,6 +213,10 @@ const RoutinePlayer = () => {
     }
 
     const countdownIsFinished = () => {
+        let exerciseRest = routine.exercises[currentExerciseIndex].rest;
+        setTotalRoutineTime(total => total + exerciseRest);
+        setCoutdownFinished(true);
+        playSound();
     }
 
     const resetTimer = () => {
@@ -179,6 +228,10 @@ const RoutinePlayer = () => {
         }, 0);
     }
     // End timer
+
+    // Start alarm
+    const { playSound, stopSound } = AlarmComponent();
+    // End alarm
 
     return (
         <SafeAreaView style={[{ flex: 1, backgroundColor: themeColor.background }]}>
