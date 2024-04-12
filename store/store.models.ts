@@ -115,3 +115,11 @@ export interface Statistic {
     totalTime: number;
     routine: Routine;
 }
+
+export interface TimerState {
+    totalValue: number;
+    currentValue: number;
+    isCountdown: boolean;
+    isRunning: boolean;
+    methodDispatch: Date;
+}

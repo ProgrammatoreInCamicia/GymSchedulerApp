@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import InternalModal from "../../../../components/modal";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import Colors from "../../../../constants/Colors";
 import CommonComponentsStyle from "../../../../constants/CommonComponentsStyle";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -10,6 +10,7 @@ import { deleteExerciseInRoutine, guidGenerator, saveExerciseInRoutine } from ".
 import Input from "../../../../components/Input";
 import { SetConfig } from "../../../../store/store.models";
 import { getGroupedSetsConfig } from "../../../../shared/utils";
+import { ExerciseImages } from "../../../exercise";
 
 export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSetShowExerciseModal, routineExerciseGuid = null }: { exerciseId: string, routineId: string, onSetShowExerciseModal: () => any, routineExerciseGuid?: string }) {
     const colorScheme = useColorScheme();
@@ -141,116 +142,125 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                 </View>
                 <View style={[styles.centeredView]}>
                     <ScrollView style={[{}]}>
-                        <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>
-                            {exercise?.name}
-                        </Text>
-                        <View style={[styles.setsContainer, { backgroundColor: themeColor.secondary + 20 }]}>
-                            {setsConfig.map((setConfig, index) => {
-                                return (
-                                    <View key={index}>
-                                        <View style={[styles.setContainer, {}]}>
-                                            <View style={styles.setPiece}>
-                                                <View style={{ flex: 1 }}>
-                                                    <Input
-                                                        inputMode="decimal"
-                                                        value={setConfig.sets}
-                                                        onValueChange={(sets) => handleSetsChange(index, sets)}
-                                                    />
-                                                </View>
-                                                <View style={[styles.setPieceLabel, { borderRightColor: themeColor.accent }]}>
-                                                    <Text style={[{ color: themeColor.text }]}>Sets</Text>
-                                                </View>
-                                            </View>
-                                            <View style={styles.setPiece}>
-                                                <View style={{ flex: 1 }}>
-                                                    <Input
-                                                        inputMode="decimal"
-                                                        value={setConfig.reps}
-                                                        onValueChange={(reps) => handleRepsChange(index, reps)}
-                                                    />
-                                                </View>
-                                                <View style={[styles.setPieceLabel, { borderRightColor: themeColor.accent }]}>
-                                                    <Text style={[{ color: themeColor.text }]}>Reps</Text>
-                                                </View>
-                                            </View>
-                                            <View style={styles.setPiece}>
-                                                <View style={{ flex: 1 }}>
-                                                    <Input
-                                                        inputMode="decimal"
-                                                        value={setConfig.weight}
-                                                        onValueChange={(weight) => handleWeightChange(index, weight)}
-                                                    />
-                                                </View>
-                                                <View style={[styles.setPieceLabel, { borderRightWidth: 0 }]}>
-                                                    <Text style={[{ color: themeColor.text }]}>Kg</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <View style={[styles.separatorContainer]}>
-                                            <View style={[styles.separator, {
-                                                backgroundColor: themeColor.accent,
-                                                marginTop: index > 0 ? 12 : 0
-                                            }]}></View>
-                                            {index > 0 && (
-                                                <TouchableOpacity
-                                                    style={[styles.deleteSet, { backgroundColor: themeColor.accent }]}
-                                                    onPress={() => setSetsConfig(setsConfig.filter((_, i) => i !== index))}
-                                                >
-                                                    <FontAwesome5 name="trash" size={14} color={themeColor.error} />
-                                                </TouchableOpacity>
-                                            )}
-                                            <View style={[styles.separator, {
-                                                backgroundColor: themeColor.accent,
-                                                marginTop: index > 0 ? 12 : 0
-                                            }]}></View>
-                                        </View>
-                                    </View>
-                                )
-                            })}
+                        <Pressable>
+                            <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>
+                                {exercise?.name}
+                            </Text>
 
-                            <TouchableOpacity onPress={() => setSetsConfig(items => [...items, {
-                                reps: '',
-                                sets: '',
-                                weight: '',
-                                guid: guidGenerator(),
-                            }])}>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    gap: 10,
-                                    justifyContent: 'center',
-                                    margin: 'auto',
-                                    backgroundColor: themeColor.background,
-                                    padding: 10,
-                                    borderRadius: 10
-                                }}>
-                                    <AntDesign name="pluscircle" size={18} color={themeColor.text} />
-                                    <Text style={{
-                                        color: themeColor.text,
-                                        fontWeight: "bold",
-                                        alignSelf: 'center'
-                                    }}>Add different set</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <View>
-                                <Input
-                                    inputMode="decimal"
-                                    label="Rest (in seconds)"
-                                    value={time}
-                                    onValueChange={(rest) => {
-                                        settime(rest);;
-                                    }}
-                                />
+                            <View style={{ height: 250 }}>
+                                <ExerciseImages id={exercise._id}>
+                                </ExerciseImages>
                             </View>
-                        </View>
-                        <Text style={[{ marginTop: 15, color: themeColor.text }]}>Note</Text>
-                        <Input
-                            multiline={true}
-                            height={200}
-                            value={note}
-                            onValueChange={(note) => {
-                                setNote(note);
-                            }}
-                        />
+
+
+                            <View style={[styles.setsContainer, { backgroundColor: themeColor.secondary + 20 }]}>
+                                {setsConfig.map((setConfig, index) => {
+                                    return (
+                                        <View key={index}>
+                                            <View style={[styles.setContainer, {}]}>
+                                                <View style={styles.setPiece}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Input
+                                                            inputMode="decimal"
+                                                            value={setConfig.sets}
+                                                            onValueChange={(sets) => handleSetsChange(index, sets)}
+                                                        />
+                                                    </View>
+                                                    <View style={[styles.setPieceLabel, { borderRightColor: themeColor.accent }]}>
+                                                        <Text style={[{ color: themeColor.text }]}>Sets</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={styles.setPiece}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Input
+                                                            inputMode="decimal"
+                                                            value={setConfig.reps}
+                                                            onValueChange={(reps) => handleRepsChange(index, reps)}
+                                                        />
+                                                    </View>
+                                                    <View style={[styles.setPieceLabel, { borderRightColor: themeColor.accent }]}>
+                                                        <Text style={[{ color: themeColor.text }]}>Reps</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={styles.setPiece}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Input
+                                                            inputMode="decimal"
+                                                            value={setConfig.weight}
+                                                            onValueChange={(weight) => handleWeightChange(index, weight)}
+                                                        />
+                                                    </View>
+                                                    <View style={[styles.setPieceLabel, { borderRightWidth: 0 }]}>
+                                                        <Text style={[{ color: themeColor.text }]}>Kg</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.separatorContainer]}>
+                                                <View style={[styles.separator, {
+                                                    backgroundColor: themeColor.accent,
+                                                    marginTop: index > 0 ? 12 : 0
+                                                }]}></View>
+                                                {index > 0 && (
+                                                    <TouchableOpacity
+                                                        style={[styles.deleteSet, { backgroundColor: themeColor.accent }]}
+                                                        onPress={() => setSetsConfig(setsConfig.filter((_, i) => i !== index))}
+                                                    >
+                                                        <FontAwesome5 name="trash" size={14} color={themeColor.error} />
+                                                    </TouchableOpacity>
+                                                )}
+                                                <View style={[styles.separator, {
+                                                    backgroundColor: themeColor.accent,
+                                                    marginTop: index > 0 ? 12 : 0
+                                                }]}></View>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+
+                                <TouchableOpacity onPress={() => setSetsConfig(items => [...items, {
+                                    reps: '',
+                                    sets: '',
+                                    weight: '',
+                                    guid: guidGenerator(),
+                                }])}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        gap: 10,
+                                        justifyContent: 'center',
+                                        margin: 'auto',
+                                        backgroundColor: themeColor.background,
+                                        padding: 10,
+                                        borderRadius: 10
+                                    }}>
+                                        <AntDesign name="pluscircle" size={18} color={themeColor.text} />
+                                        <Text style={{
+                                            color: themeColor.text,
+                                            fontWeight: "bold",
+                                            alignSelf: 'center'
+                                        }}>Add different set</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <View>
+                                    <Input
+                                        inputMode="decimal"
+                                        label="Rest (in seconds)"
+                                        value={time}
+                                        onValueChange={(rest) => {
+                                            settime(rest);;
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <Text style={[{ marginTop: 15, color: themeColor.text }]}>Note</Text>
+                            <Input
+                                multiline={true}
+                                height={200}
+                                value={note}
+                                onValueChange={(note) => {
+                                    setNote(note);
+                                }}
+                            />
+                        </Pressable>
                     </ScrollView>
                 </View>
             </Animated.View>

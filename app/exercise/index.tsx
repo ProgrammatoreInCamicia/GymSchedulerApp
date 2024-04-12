@@ -6,18 +6,14 @@ import CommonComponentsStyle from '../../constants/CommonComponentsStyle';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import AnimatedPagerView from '../../components/animatedPagerView';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { getExercise } from '../../store/exercises.reducer';
 import { MUSCLES_CATEGORIES } from '../../store/store.models';
 
-export default function ExerciseDetailComponent() {
-    const { id } = useLocalSearchParams<{ id: string }>();
-
-    const colorScheme = useColorScheme();
-    const themeColor = Colors[colorScheme ?? 'light'];
-
+export const ExerciseImages = memo(({ id }: { id: string }) => {
     const dispatch = useAppDispatch();
-    const currentExercise = useAppSelector((store) => store.exercises.exerciseDetail)
+    const currentExercise = useAppSelector((store) => store.exercises.exerciseDetail);
+
     const imgContent = (img: string) => {
         return (
             <View style={styles.imageContainer}>
@@ -29,6 +25,57 @@ export default function ExerciseDetailComponent() {
             </View>
         )
     }
+
+    useEffect(() => {
+        dispatch(getExercise(id));
+    }, [id]);
+
+    return (
+        <AnimatedPagerView
+            content={imgContent}
+            data={currentExercise?.images}
+        ></AnimatedPagerView>
+    );
+});
+
+export const ExerciseInstructions = memo(({ id }: { id: string }) => {
+    const dispatch = useAppDispatch();
+    const currentExercise = useAppSelector((store) => store.exercises.exerciseDetail);
+
+    useEffect(() => {
+        dispatch(getExercise(id));
+    }, [id]);
+
+    return (
+        <View style={{ gap: 15 }}>
+            {currentExercise?.instructions?.map((singleRow, index) => {
+                return (
+                    <Text key={index} style={{ color: 'white', fontSize: 14 }}>{index + 1}. {singleRow}</Text>
+                )
+            })}
+        </View>
+    );
+});
+
+export default function ExerciseDetailComponent() {
+    const { id } = useLocalSearchParams<{ id: string }>();
+
+    const colorScheme = useColorScheme();
+    const themeColor = Colors[colorScheme ?? 'light'];
+
+    const dispatch = useAppDispatch();
+    const currentExercise = useAppSelector((store) => store.exercises.exerciseDetail)
+    // const imgContent = (img: string) => {
+    //     return (
+    //         <View style={styles.imageContainer}>
+    //             <Image
+    //                 source={{ uri: `${process.env.EXPO_PUBLIC_API_BASE_URL}/images/${img}` }}
+    //                 style={[styles.image]}
+    //                 resizeMode='contain'
+    //             />
+    //         </View>
+    //     )
+    // }
 
     const details: string[] = ['instructions', 'muscles', 'equipment'];
 
@@ -101,13 +148,14 @@ export default function ExerciseDetailComponent() {
         return (
             <View style={{ padding: 10 }}>
                 {detail == 'instructions' && (
-                    <View style={{ gap: 15 }}>
-                        {currentExercise?.instructions?.map((singleRow, index) => {
-                            return (
-                                <Text key={index} style={{ color: 'white', fontSize: 14 }}>{index + 1}. {singleRow}</Text>
-                            )
-                        })}
-                    </View>
+                    <ExerciseInstructions id={id}></ExerciseInstructions>
+                    // <View style={{ gap: 15 }}>
+                    //     {currentExercise?.instructions?.map((singleRow, index) => {
+                    //         return (
+                    //             <Text key={index} style={{ color: 'white', fontSize: 14 }}>{index + 1}. {singleRow}</Text>
+                    //         )
+                    //     })}
+                    // </View>
                 )}
                 {detail == 'muscles' && (
                     <ScrollView>
@@ -168,11 +216,12 @@ export default function ExerciseDetailComponent() {
     return (
         <SafeAreaView style={[{ flex: 1, backgroundColor: themeColor.background }]}>
             <View style={{ height: 250 }}>
-                <AnimatedPagerView
+                <ExerciseImages id={id}></ExerciseImages>
+                {/* <AnimatedPagerView
                     content={imgContent}
                     data={currentExercise?.images}
 
-                ></AnimatedPagerView>
+                ></AnimatedPagerView> */}
 
             </View>
             <View style={[styles.exerciseContainer, {}]}>

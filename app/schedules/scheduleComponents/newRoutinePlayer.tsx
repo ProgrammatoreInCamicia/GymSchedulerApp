@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TouchableWithoutFeedback, View, useColorScheme } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, useColorScheme } from "react-native";
 import Colors from "../../../constants/Colors";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,11 +8,20 @@ import InternalButton from "../../../components/button";
 import { useEffect, useRef, useState } from "react";
 import Input from "../../../components/Input";
 import { HistorycalData, RoutineExercise } from "../../../store/store.models";
-import Timer from "../../../components/timer";
+// import Timer from "../../../components/timer";
 import { addHistoricalData, addWorkoutStatistics } from "../../../store/schedules.reducer";
 import { AlarmComponent } from "../../../components/alarmComponent";
+import { ExerciseImages, ExerciseInstructions } from "../../exercise";
+import { useKeepAwake } from 'expo-keep-awake';
+import { Ionicons } from '@expo/vector-icons';
+import { resetTimer, setTimerAsCoundown, setTimerValue, startTimer, stopTimer, tick } from "../../../store/timer.reducer";
+import Timer2 from "../../../components/timer2";
+// import Timer2 from "../../../components/timer2";
+// import { resetTimer, setTimerAsCoundown, setTimerValue, startTimer } from "../../../store/timer.reducer";
 
 const RoutinePlayer = () => {
+    useKeepAwake();
+
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
 
@@ -22,31 +31,27 @@ const RoutinePlayer = () => {
     const { routineId } = useLocalSearchParams();
     const routine = useAppSelector((state) => state.schedules.currentSchedule.routines.find(r => r.guid == routineId));
 
+    const intervalRef = useRef(null);
     // Start Historical data definition
     useEffect(() => {
+        clearInterval(intervalRef.current);
+        dispatch(resetTimer());
         setCurrentExercise(0);
+        dispatch(startTimer());
+        // intervalRef.current = setInterval(() => {
+        //     dispatch(tick());
+        // }, 1000)
     }, [routine]);
 
     const setCurrentExercise = (index: number) => {
         if (index > routine.exercises.length - 1) {
-            dispatch(addWorkoutStatistics({
-                routine: routine,
-                totalTime: totalRoutineTime
-            }));
+            // dispatch(addWorkoutStatistics({
+            //     routine: routine,
+            //     totalTime: timerInitialValue
+            // }));
 
-            // Save history data
-            // routine.exercises.forEach((exercise, exerciseIndex) => {
-            //     let changedExercise = { ...exercise };
-            //     if (exerciseIndex < routine.exercises.length - 1) {
-            //         changedExercise.setsConfig.forEach((setConfig, setConfigIndex) => {
-            //             setConfig.historicalData.push(localHistoricalData[exerciseIndex][setConfigIndex]);
-            //         });
-            //     } else {
-            //         changedExercise.setsConfig.forEach((setConfig, setConfigIndex) => {
-            //             setConfig.historicalData.push(historicalData[setConfigIndex]);
-            //         });
-            //     }
-            // });
+            dispatch(stopTimer());
+
             localHistoricalData.forEach((historicalData, exerciseIndex) => {
                 historicalData.forEach((historycalData, setIndex) => {
                     dispatch(addHistoricalData({
@@ -87,7 +92,7 @@ const RoutinePlayer = () => {
             setCurrentExerciseIndex(index);
             setCurrentSetIndex(0);
             setHistoricalDataOfCurrentRoutineExercise(index);
-            resetTimer();
+            // resetTimer();
 
         }
     }
@@ -146,13 +151,81 @@ const RoutinePlayer = () => {
     const [historicalData, setHistoricalData] = useState<HistorycalData[]>([]);
     const [localHistoricalData, setLocalHistoricalData] = useState<HistorycalData[][]>([]);
 
-    const goNext = () => {
+    // const goNext2 = () => {
+    //     // const isCountDownInternal = useAppSelector(state => state.timer.isCountdown);
+    //     console.log('go next', timerIsCountdown);
+    //     let currentExerciseSetCount = historicalData.length;
+    //     let exerciseRest = routine.exercises[currentExerciseIndex].rest;
+    //     // skip coutdown
+    //     if (timerIsCountdown) {
+    //         const newTotal = timerInitialValue + (exerciseRest - timerCurrentValue);
+    //         // dispatch(setTimerInitialValue({ value: newTotal }));
+    //         console.log('setTotalRoutineTime : timerIsCountdown', newTotal);
+    //         // setTotalRoutineTime(newTotal);
+    //         // setTotalRoutineTime(total => total + (exerciseRest - getTimerChildState()));
+    //         // console.log('totalRoutineTime', totalRoutineTime);
+    //         // setTimeout(() => {
+    //         //     console.log('totalRoutineTime', totalRoutineTime);
+
+    //         // }, 0);
+    //         // setTimeout(() => {
+    //         if (currentSetIndex < currentExerciseSetCount - 1) {
+    //             goToNextSet();
+    //         } else {
+    //             // go to next exercise
+    //             setCurrentExercise(currentExerciseIndex + 1);
+    //             goToNextSet()
+    //         }
+
+    //         // }, 1);
+
+    //         return;
+    //     }
+    //     // setTotalRoutineTime(total => total + getTimerChildState());
+    //     console.log('setTotalRoutineTime go next', timerCurrentValue);
+    //     // dispatch(setTimerInitialValue({ value: timerCurrentValue }));
+    //     // setTotalRoutineTime(timerCurrentValue);
+    //     // setStopTimer(stopTimer => !stopTimer);
+
+    //     // Check if current set is not the last inside current exercise
+    //     console.log('go next', exerciseRest, currentExerciseSetCount, currentSetIndex);
+    //     if (currentSetIndex < currentExerciseSetCount - 1) {
+    //         if (exerciseRest > 0) {
+    //             // start rest timer
+    //             setTotalRoutineTime(timerCurrentValue);
+    //             dispatch(setTimerAsCoundown({ isCountdown: true }));
+    //             dispatch(setTimerValue({ value: exerciseRest }));
+    //         } else {
+    //             // go to next set
+    //             goToNextSet();
+    //         }
+    //     } else {
+    //         // go to next exercise
+    //         setCurrentExercise(currentExerciseIndex + 1);
+    //     }
+
+    // }
+
+    function goNext(coundownFinished: boolean) {
+        // console.log('function go next', timerIsCountdown);
+
         let currentExerciseSetCount = historicalData.length;
         let exerciseRest = routine.exercises[currentExerciseIndex].rest;
-        // skip coutdown
-        if (isCountdown) {
-            setTotalRoutineTime(total => total + (exerciseRest - getTimerChildState()));
 
+        // countdown finished
+        if (coundownFinished) {
+            // const newTotal = timerInitialValue + (exerciseRest - timerCurrentValue);
+            // dispatch(setTimerInitialValue({ value: newTotal }));
+            // dispatch(setTimerValue({ value: newTotal }));
+            // console.log('setTotalRoutineTime : timerIsCountdown', newTotal);
+            // setTotalRoutineTime(newTotal);
+            // setTotalRoutineTime(total => total + (exerciseRest - getTimerChildState()));
+            // console.log('totalRoutineTime', totalRoutineTime);
+            // setTimeout(() => {
+            //     console.log('totalRoutineTime', totalRoutineTime);
+
+            // }, 0);
+            // setTimeout(() => {
             if (currentSetIndex < currentExerciseSetCount - 1) {
                 goToNextSet();
             } else {
@@ -161,20 +234,16 @@ const RoutinePlayer = () => {
                 goToNextSet()
             }
 
+            // }, 1);
+
             return;
         }
-        setTotalRoutineTime(total => total + getTimerChildState());
-        setStopTimer(stopTimer => !stopTimer);
 
-        // Check if current set is not the last inside current exercise
         if (currentSetIndex < currentExerciseSetCount - 1) {
             if (exerciseRest > 0) {
                 // start rest timer
-                setIsCountdown(true);
-                setStartTimerFrom(exerciseRest);
-                setTimeout(() => {
-                    setStartTimer(startTimer => !startTimer);
-                }, 0);
+                dispatch(setTimerAsCoundown({ isCountdown: true }));
+                dispatch(setTimerValue({ value: exerciseRest }));
             } else {
                 // go to next set
                 goToNextSet();
@@ -183,51 +252,47 @@ const RoutinePlayer = () => {
             // go to next exercise
             setCurrentExercise(currentExerciseIndex + 1);
         }
-
     }
 
     const goToNextSet = () => {
-        resetTimer();
         setCurrentSetIndex(currentSet => currentSet + 1);
     }
 
     const stopSoundAndGoNext = () => {
         stopSound();
-        setCoutdownFinished(false);
+        removeCountdown();
+    }
 
-        goNext();
+    const removeCountdown = () => {
+        dispatch(setTimerAsCoundown({ isCountdown: false, dispatchMethod: true }));
     }
 
     // Start timer
-    const timerChildRef = useRef<any>();
-    const [startTimer, setStartTimer] = useState(false);
-    const [stopTimer, setStopTimer] = useState(false);
-    const [isCountdown, setIsCountdown] = useState(false);
-    const [startTimerFrom, setStartTimerFrom] = useState(0);
-    const [coutdownFinished, setCoutdownFinished] = useState(false);
-    const [totalRoutineTime, setTotalRoutineTime] = useState(0);
+    const timerCurrentValue = useAppSelector(state => state.timer.currentValue);
+    // const timerInitialValue = useAppSelector(state => state.timer.totalValue);
+    const timerIsCountdown = useAppSelector(state => state.timer.isCountdown);
+    const dispatchMethod = useAppSelector(state => state.timer.methodDispatch);
 
-    const getTimerChildState = () => {
-        const timer = timerChildRef.current.getChildTimer();
-        return timer;
-    }
+    const [dispatchMethodCounter, setDispatchMethodCounter] = useState(0);
 
-    const countdownIsFinished = () => {
-        let exerciseRest = routine.exercises[currentExerciseIndex].rest;
-        setTotalRoutineTime(total => total + exerciseRest);
-        setCoutdownFinished(true);
-        playSound();
-    }
+    useEffect(() => {
+        if (dispatchMethodCounter > 0) {
+            goNext(true)
+        }
 
-    const resetTimer = () => {
-        setStartTimerFrom(0);
-        setStopTimer(stopTimer => !stopTimer);
-        setIsCountdown(false);
-        setTimeout(() => {
-            setStartTimer(startTimer => !startTimer);
-        }, 0);
-    }
+        setDispatchMethodCounter(counter => counter + 1);
+    }, [dispatchMethod]);
+
+    // useEffect(() => {
+    //     if (timerCurrentValue == 0 && timerIsCountdown) {
+    //         playSound();
+    //     }
+    // }, [timerIsCountdown, timerCurrentValue])
     // End timer
+
+    // Start Usabilities
+    const [detailOpened, setDetailOpened] = useState<boolean>(false);
+    // End Usabilities
 
     // Start alarm
     const { playSound, stopSound } = AlarmComponent();
@@ -236,16 +301,18 @@ const RoutinePlayer = () => {
     return (
         <SafeAreaView style={[{ flex: 1, backgroundColor: themeColor.background }]}>
             <View style={{ alignItems: 'center' }}>
-                <Timer
+                {/* <Text>{timerCurrentValue}</Text> */}
+                <Timer2></Timer2>
+                {/* <Timer
                     ref={timerChildRef}
                     start={startTimer}
                     stop={stopTimer}
                     startFrom={startTimerFrom}
                     isCountdown={isCountdown}
                     countdownIsFinished={countdownIsFinished}
-                />
+                /> */}
             </View>
-            <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>{routine.name}</Text>
+            {/* <Text style={[CommonComponentsStyle.title, { color: themeColor.text }]}>{routine.name}</Text> */}
 
             {/* Start Exercises navigator */}
             <FlatList
@@ -278,8 +345,36 @@ const RoutinePlayer = () => {
                 }} />
             {/* End Exercises navigator */}
 
+            <View style={{ display: 'flex', flexDirection: 'row', paddingHorizontal: 15, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={[CommonComponentsStyle.title, { color: themeColor.text, flex: 1 }]}>{routine.exercises[currentExerciseIndex].exercise.name}</Text>
+                {!detailOpened && (
+                    <TouchableOpacity onPress={() => setDetailOpened(true)}>
+                        <Ionicons name="chevron-forward" size={24} color="white" />
+
+                    </TouchableOpacity>
+                )}
+                {detailOpened && (
+                    <TouchableOpacity onPress={() => setDetailOpened(false)}>
+                        <Ionicons name="chevron-down-sharp" size={24} color="white" />
+
+                    </TouchableOpacity>
+                )}
+            </View>
+            {detailOpened && (
+                <ScrollView style={{ paddingHorizontal: 15, flex: 1 }}>
+                    <View style={{ height: 250 }}>
+                        <ExerciseImages id={routine.exercises[currentExerciseIndex].exercise._id}>
+                        </ExerciseImages>
+                    </View>
+
+
+                    <ExerciseInstructions id={routine.exercises[currentExerciseIndex].exercise._id}></ExerciseInstructions>
+
+                </ScrollView>
+            )}
+
             {/* Start Exercises sets executions */}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingHorizontal: 15 }}>
                 <FlatList
                     data={historicalData}
                     keyExtractor={(singleHistoricalData, i) => i + ''}
@@ -325,14 +420,22 @@ const RoutinePlayer = () => {
 
             <View style={[{ backgroundColor: themeColor.black + 40, paddingHorizontal: 20 }]}>
                 <InternalButton
-                    label={isCountdown && !coutdownFinished ? "Skip" : "Done"}
+                    label={(timerIsCountdown && timerCurrentValue > 0) ? "Skip" : "Done"}
                     onPress={() => {
-                        if (!coutdownFinished)
-                            goNext();
+                        if (timerIsCountdown && timerCurrentValue > 0)
+                            removeCountdown();
+                        else if (!timerIsCountdown)
+                            goNext(false);
                         else
                             stopSoundAndGoNext()
                     }}
                 />
+                {/* <InternalButton
+                    label={"Done"}
+                    onPress={() => {
+                        goNext(false);
+                    }}
+                /> */}
             </View>
 
         </SafeAreaView>

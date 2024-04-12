@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { persistReducer, persistStore } from 'redux-persist';
 import hardSet from "redux-persist/lib/stateReconciler/hardSet";
+import timerReducer from "./timer.reducer";
 
 const persistConfig = {
     key: 'root',
@@ -17,7 +18,8 @@ const reducers = combineReducers({
     counter: counterReducer,
     other: null,
     exercises: exercisesReducer,
-    schedules: schedulesReducer
+    schedules: schedulesReducer,
+    timer: timerReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, reducers)
@@ -25,6 +27,7 @@ const persistedReducer = persistReducer(persistConfig, reducers)
 export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        immutableCheck: false,
         serializableCheck: false
     })
 });
