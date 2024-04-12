@@ -95,7 +95,8 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                     return setConfigArray;
                 }).flat(),
                 rest: +time,
-                guid: routineExerciseGuid
+                guid: routineExerciseGuid,
+                notes: note
             }
         }));
     }
@@ -270,12 +271,11 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
     useEffect(() => {
         if (routineExerciseGuid) {
             const currentRoutineExercise = routine.exercises.find(ex => ex.guid === routineExerciseGuid);
-            console.log(currentRoutineExercise);
             settime(currentRoutineExercise.rest + '');
             const groupedData = getGroupedSetsConfig(currentRoutineExercise.setsConfig)
-            console.log(groupedData);
             groupedData.forEach(gd => gd.sets = gd.sets.toString());
             setSetsConfig(groupedData);
+            setNote(currentRoutineExercise.notes);
             // setSetsConfig(currentRoutineExercise.setsConfig.map((setConfig) => {
             //     return {
             //         guid: setConfig.guid,

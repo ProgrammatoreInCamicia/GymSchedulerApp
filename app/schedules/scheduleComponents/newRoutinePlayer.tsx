@@ -360,6 +360,9 @@ const RoutinePlayer = () => {
                     </TouchableOpacity>
                 )}
             </View>
+            <View style={{ paddingHorizontal: 15 }}>
+                <Text style={[CommonComponentsStyle.title, { color: themeColor.text, paddingTop: 0, fontSize: 14 }]}>{routine.exercises[currentExerciseIndex].notes}</Text>
+            </View>
             {detailOpened && (
                 <ScrollView style={{ paddingHorizontal: 15, flex: 1 }}>
                     <View style={{ height: 250 }}>

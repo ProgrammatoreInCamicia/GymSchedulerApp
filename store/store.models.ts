@@ -93,6 +93,7 @@ export interface RoutineExercise {
     setsConfig: SetConfig[],
     exercise: Exercise;
     rest: number;
+    notes: string;
 }
 
 export interface SetConfig extends Set {

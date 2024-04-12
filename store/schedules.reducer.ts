@@ -95,6 +95,7 @@ const schedulesReducer = createSlice({
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].exercise = action.payload.routineExercise.exercise;
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].setsConfig = action.payload.routineExercise.setsConfig;
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].rest = action.payload.routineExercise.rest;
+                state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises[exerciseIndex].notes = action.payload.routineExercise.notes;
             } else {
                 state.schedules[scheduleToChangeIndex].routines[routineToChangeIndex].exercises.push({
                     ...action.payload.routineExercise,
