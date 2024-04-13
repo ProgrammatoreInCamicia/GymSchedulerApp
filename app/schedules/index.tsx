@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native';
+import { Image, StyleSheet, Text, Touchable, TouchableOpacity, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';

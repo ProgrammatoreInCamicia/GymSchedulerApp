@@ -11,15 +11,16 @@ import Input from "../../../../components/Input";
 import { SetConfig } from "../../../../store/store.models";
 import { getGroupedSetsConfig } from "../../../../shared/utils";
 import { ExerciseImages } from "../../../exercise";
+import { getExercise } from "../../../../store/exercises.reducer";
 
 export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSetShowExerciseModal, routineExerciseGuid = null }: { exerciseId: string, routineId: string, onSetShowExerciseModal: () => any, routineExerciseGuid?: string }) {
     const colorScheme = useColorScheme();
     const themeColor = Colors[colorScheme ?? 'light'];
     const dispatch = useAppDispatch();
 
-    const exercise = useAppSelector(state => state.exercises.exercises.find(ex => ex._id == exerciseId))
+    const exercise = useAppSelector((store) => store.exercises.exerciseDetail);
+    // const exercise = useAppSelector(state => state.exercises.exercises.find(ex => ex._id == exerciseId))
     const routine = useAppSelector(state => state.schedules.currentSchedule.routines.find(r => r.guid == routineId));
-
     const deleteExercise = () => {
         dispatch(deleteExerciseInRoutine({ routine, routineExerciseGuid: routineExerciseGuid }));
         onSetShowExerciseModal();
@@ -149,7 +150,7 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                             </Text>
 
                             <View style={{ height: 250 }}>
-                                <ExerciseImages id={exercise._id}>
+                                <ExerciseImages id={exerciseId}>
                                 </ExerciseImages>
                             </View>
 
@@ -264,9 +265,13 @@ export default function ExerciseSettingsInSchedule({ exerciseId, routineId, onSe
                         </Pressable>
                     </ScrollView>
                 </View>
-            </Animated.View>
+            </Animated.View >
         )
     }
+
+    useEffect(() => {
+        dispatch(getExercise(exerciseId));
+    }, [exerciseId]);
 
     useEffect(() => {
         if (routineExerciseGuid) {

@@ -8,7 +8,7 @@ import AnimatedPagerView from '../../components/animatedPagerView';
 import { useLocalSearchParams } from 'expo-router';
 import { memo, useEffect } from 'react';
 import { getExercise } from '../../store/exercises.reducer';
-import { MUSCLES_CATEGORIES } from '../../store/store.models';
+import { Exercise, MUSCLES_CATEGORIES } from '../../store/store.models';
 
 export const ExerciseImages = memo(({ id }: { id: string }) => {
     const dispatch = useAppDispatch();
@@ -38,12 +38,14 @@ export const ExerciseImages = memo(({ id }: { id: string }) => {
     );
 });
 
-export const ExerciseInstructions = memo(({ id }: { id: string }) => {
+export const ExerciseInstructions = memo(({ id, exercise }: { id?: string, exercise?: Exercise }) => {
     const dispatch = useAppDispatch();
-    const currentExercise = useAppSelector((store) => store.exercises.exerciseDetail);
+    const currentExercise = exercise ? exercise : useAppSelector((store) => store.exercises.exerciseDetail);
 
     useEffect(() => {
-        dispatch(getExercise(id));
+        if (!exercise) {
+            dispatch(getExercise(id));
+        }
     }, [id]);
 
     return (
@@ -145,10 +147,11 @@ export default function ExerciseDetailComponent() {
     }
 
     const detailContent = (detail: string) => {
+        console.log(detail);
         return (
             <View style={{ padding: 10 }}>
                 {detail == 'instructions' && (
-                    <ExerciseInstructions id={id}></ExerciseInstructions>
+                    <ExerciseInstructions exercise={currentExercise}></ExerciseInstructions>
                     // <View style={{ gap: 15 }}>
                     //     {currentExercise?.instructions?.map((singleRow, index) => {
                     //         return (

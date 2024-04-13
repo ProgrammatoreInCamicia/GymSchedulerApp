@@ -1,5 +1,5 @@
-import React from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native"
+import React, { LegacyRef, Ref } from "react";
+import { Animated, Pressable, StyleSheet, Text, Touchable, TouchableOpacity, View, useColorScheme } from "react-native"
 import PagerView from "react-native-pager-view";
 import Colors from "../constants/Colors";
 
@@ -25,6 +25,7 @@ export default function AnimatedPagerView(
     const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
     const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
 
+    let internalAnimatedPagerView = React.useRef<any>();
     const internalOnPageSelected = (e: any) => {
         const currentPage = e.nativeEvent.position;
         // onPageSelected(currentPage);
@@ -42,10 +43,13 @@ export default function AnimatedPagerView(
 
                     return (
                         <Animated.View key={index} style={{ opacity: opacity }}>
-                            <Text style={{
-                                color: themeColor.text,
-                                fontSize: 16
-                            }}>{item[titleField]}</Text>
+                            <TouchableOpacity onPress={() => internalAnimatedPagerView.current.setPage(index)}>
+                                <Text style={{
+                                    color: themeColor.text,
+                                    fontSize: 16
+                                }}>{item[titleField]}</Text>
+
+                            </TouchableOpacity>
                         </Animated.View>
                     );
                 })}
@@ -69,6 +73,7 @@ export default function AnimatedPagerView(
             )}
             <AnimatedPagerView
                 style={styles.pagerView}
+                ref={internalAnimatedPagerView}
                 initialPage={page}
                 onPageScroll={(e) => {
                     // Set animation variables based on PagerView parameters
@@ -79,8 +84,12 @@ export default function AnimatedPagerView(
             >
                 {data.map((item, index) => (
                     <View key={index}>
+                        {/* <Pressable> */}
                         {content(item)}
+
+                        {/* </Pressable> */}
                     </View>
+
                 ))}
             </AnimatedPagerView>
         </View>

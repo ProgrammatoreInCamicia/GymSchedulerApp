@@ -5,7 +5,7 @@ import Colors from "../../../constants/Colors";
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import InternalModal from "../../../components/modal";
 import { useState } from "react";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import SearchBar from "../../../components/searchBar";
 import { ExercisesComponent, ExerciseItem } from "../../../components/exercisesComponents";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -81,6 +81,41 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
         )
     }
 
+    const [showRoutineMenuShowModal, setShowRoutineMenuShowModal] = useState(false);
+
+    const deleteCurrentRoutine = () => {
+        // dispatch(deleteCurrentRoutine())
+    };
+
+    const routineMenuModalContent = () => {
+        return (
+            <Animated.View style={[CommonComponentsStyle.modalContentContainer,
+            { backgroundColor: themeColor.background }]} entering={FadeInDown}>
+                <View style={[{ padding: 10 }]}>
+                    <Text style={[{ color: themeColor.text, fontSize: 20, textTransform: 'capitalize' }]}>{routine.name}</Text>
+                </View>
+                {/* <TouchableOpacity style={[CommonComponentsStyle.modalContentContainerItem]} onPress={() => {
+            //   router.push({ pathname: '/schedules/scheduleEdit', params: { insertMode: false } });
+              setShowRoutineMenuShowModal(false);
+            }}>
+              <Entypo name="edit" size={18} color="white" />
+              <Text style={[styles.itemText, { color: themeColor.text }]}>Modify</Text>
+            </TouchableOpacity> */}
+                <TouchableOpacity
+                    style={[
+                        CommonComponentsStyle.modalContentContainerItem, {}]}
+                    onPress={() => {
+                        deleteCurrentRoutine();
+                        setShowRoutineMenuShowModal(false);
+                    }}>
+                    {/* <Entypo name="edit" size={18} color="white" /> */}
+                    <AntDesign name="delete" size={18} color="white" />
+                    <Text style={[styles.itemText, { color: themeColor.text }]}>Delete</Text>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    }
+
     return (
         <View style={[{ flex: 1 }]}>
             {/* Start Routine Exercises */}
@@ -91,6 +126,8 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                 </View>
             )}
 
+            {/* <View style={{ flex: 1 }}> */}
+
             {routine.exercises.length > 0 && (
                 <DraggableFlatList
                     data={routine.exercises}
@@ -98,17 +135,21 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                         dispatch(setExercisesInRoutine({ routine: routine, routineExercises: data }))
                     }
                     keyExtractor={item => item.guid}
-                    renderItem={({ item, drag, isActive }) => (
+                    renderItem={({ item, drag, isActive, getIndex }) => (
                         <ScaleDecorator>
                             <TouchableOpacity
                                 onLongPress={drag}
                                 disabled={isActive}>
-                                <View style={[styles.previewContainer, { backgroundColor: themeColor.black + 40 }]}>
+                                <View style={[styles.previewContainer, {
+                                    backgroundColor: themeColor.black + 40,
+                                    marginBottom: getIndex() == routine.exercises.length - 1 ? 80 : 10
+                                }]}>
                                     <ExerciseItem
                                         item={item.exercise}
                                         exercisePressed={() => {
                                             // setShowModal(true);
                                             setTimeout(() => {
+                                                // console.log(item.exercise)
                                                 changeSelectedExercise(item.exercise._id, item.guid);
                                                 // setSets(routineExercise.sets.toString());
                                                 // setreps(routineExercise.reps.toString());
@@ -142,7 +183,9 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     )}
                 />
             )}
-            <View style={{ height: 60 }}></View>
+            {/* </View> */}
+
+            <View style={{ height: 80, width: 200, backgroundColor: 'red' }}></View>
 
             <InternalModal
                 showModal={showModal}
@@ -182,11 +225,17 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
                     style={[styles.iconButton, { opacity: routine.exercises.length > 0 ? 1 : .4 }]}>
                     <Entypo name="controller-play" size={24} color={themeColor.text} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log('menu')} style={[styles.iconButton]}>
+                <TouchableOpacity onPress={() => setShowRoutineMenuShowModal(true)} style={[styles.iconButton]}>
                     <Entypo name="dots-three-horizontal" size={24} color={themeColor.text} />
                 </TouchableOpacity>
             </View>
             {/* End Routine control menu */}
+
+            <InternalModal
+                showModal={showRoutineMenuShowModal}
+                removeModal={() => setShowRoutineMenuShowModal(false)}
+                content={routineMenuModalContent}
+            />
         </View>
     )
 };
@@ -233,5 +282,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5
+    },
+    itemText: {
+        fontWeight: '500',
+        fontSize: 16,
+        textTransform: 'capitalize',
+        flex: 1
     }
 });

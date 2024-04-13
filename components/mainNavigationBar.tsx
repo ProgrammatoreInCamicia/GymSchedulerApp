@@ -12,13 +12,6 @@ const MainNavigationBar = () => {
     const path = usePathname();
     return (
         <View style={[styles.backgroundStyle, { backgroundColor: themeColor.background }]}>
-            <TouchableOpacity style={[styles.iconContainer, path == '/' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/')}>
-                <Feather
-                    name="search"
-                    style={[styles.iconStyle, { fontSize: path == '/' ? 30 : 25 }]}
-                    color={path == '/' ? themeColor.white : themeColor.background}
-                />
-            </TouchableOpacity>
             <TouchableOpacity style={[styles.iconContainer, path == '/schedules' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/schedules')}>
                 <AntDesign
                     name="calendar"
@@ -26,6 +19,14 @@ const MainNavigationBar = () => {
                     color={path == '/schedules' ? themeColor.white : themeColor.background}
                 />
             </TouchableOpacity>
+            <TouchableOpacity style={[styles.iconContainer, path == '/' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/')}>
+                <Feather
+                    name="search"
+                    style={[styles.iconStyle, { fontSize: path == '/' ? 30 : 25 }]}
+                    color={path == '/' ? themeColor.white : themeColor.background}
+                />
+            </TouchableOpacity>
+
             <TouchableOpacity style={[styles.iconContainer, path == '/statistics' ? { ...styles.iconContainerActive, borderColor: themeColor.white, backgroundColor: themeColor.background } : null]} onPress={() => router.push('/statistics')}>
                 <Foundation
                     name="graph-bar"
