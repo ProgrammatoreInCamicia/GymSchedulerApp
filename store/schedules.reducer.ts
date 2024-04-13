@@ -75,6 +75,11 @@ const schedulesReducer = createSlice({
             });
             state.currentSchedule = state.schedules[scheduleToChangeIndex];
         },
+        deleteRoutineFromSchedule: (state, action: PayloadAction<{ scheduleId: string, routineGuid: string }>) => {
+            let scheduleToChangeIndex = state.schedules.findIndex(s => s.guid == action.payload.scheduleId);
+            state.schedules[scheduleToChangeIndex].routines = state.schedules[scheduleToChangeIndex].routines.filter(r => r.guid !== action.payload.routineGuid);
+            state.currentSchedule = state.schedules[scheduleToChangeIndex];
+        },
         setExercisesInRoutine: (state, action: PayloadAction<{ routineExercises: RoutineExercise[], routine: Routine }>) => {
             let scheduleToChangeIndex = state.schedules
                 .findIndex(s => s.guid == action.payload.routine.scheduleId)
@@ -165,5 +170,6 @@ export const {
     deleteSchedule,
     setExercisesInRoutine,
     addHistoricalData,
+    deleteRoutineFromSchedule,
 } = schedulesReducer.actions
 export default schedulesReducer.reducer;

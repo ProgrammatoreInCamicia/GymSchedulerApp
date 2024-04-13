@@ -13,7 +13,7 @@ import { searchExercises, searchTermChange } from "../../../store/exercises.redu
 import { router } from "expo-router";
 import ExerciseSettingsInSchedule from "./components/exerciseSettingsInSchedule";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
-import { setExercisesInRoutine } from "../../../store/schedules.reducer";
+import { deleteRoutineFromSchedule, setExercisesInRoutine } from "../../../store/schedules.reducer";
 import { getGroupedSetsConfig } from "../../../shared/utils";
 
 export default function RoutineComponent({ routine }: { routine: Routine }) {
@@ -84,7 +84,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
     const [showRoutineMenuShowModal, setShowRoutineMenuShowModal] = useState(false);
 
     const deleteCurrentRoutine = () => {
-        // dispatch(deleteCurrentRoutine())
+        dispatch(deleteRoutineFromSchedule({ scheduleId: routine.scheduleId, routineGuid: routine.guid }));
     };
 
     const routineMenuModalContent = () => {
@@ -185,7 +185,7 @@ export default function RoutineComponent({ routine }: { routine: Routine }) {
             )}
             {/* </View> */}
 
-            <View style={{ height: 80, width: 200, backgroundColor: 'red' }}></View>
+            <View style={{ height: 80 }}></View>
 
             <InternalModal
                 showModal={showModal}
